@@ -37,7 +37,6 @@ exports.seachForCourse = async (data) => {
             },
             raw: true,
         })
-        // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.', foundProgram);
         const foundUniversity = await University.findAll({
             where: {
                 [Op.or]:[
@@ -47,10 +46,6 @@ exports.seachForCourse = async (data) => {
             },
             raw: true,
         })
-        console.log('>>>>>>>>>>>>University', foundUniversity);
-        console.log('>>>>>>>>>>>>University Count', foundUniversity.length);
-
-
         if (
             Number(foundCourse.length) > 0 
             && Number(foundProgram.length) < 1 
@@ -85,7 +80,6 @@ exports.seachForCourse = async (data) => {
                         UniversityId: university.id
                     }
                 })
-                // console.log('>>>>>>>>>>> program found inside one university', program);
                 if(program){
                     const available_course = await Course.findAll(
                         {
@@ -100,14 +94,7 @@ exports.seachForCourse = async (data) => {
 
             }
         }
-        // else if (
-        //     Number(foundCourse.length) > 0 
-        //     && Number(foundProgram.length) > 1 
-        //     && Number(foundUniversity.length) > 0 
-        // ){
-        //     result = foundProgram
-        // }
-
+ 
         console.log('>>>>>>>>>>>COurse Found', result);
 
         // paginate the result
@@ -142,71 +129,6 @@ exports.seachForCourse = async (data) => {
     }
 }
 
-exports.seedCourses = async () => {
-    try {
-        let allPrograms = await Program.findAll()
-        let allCourses = []
-        // const allUniversities = await University.findAll()
-        // for(const university of allUniversities){
-        //     var undergraduate = await Program.create({
-        //         name: "undergraduate",
-        //         description: "undergraduate courses that take 4 to 5 years",
-        //         duration: "4 to 5 years",
-        //         UniversityId: university.id
-        //     })
-        //     var graduate = await Program.create({
-        //         name: "graduate",
-        //         description: "graduate courses that take 1 to 2 years",
-        //         duration: "1 to 2 years",
-        //         UniversityId: university.id
-        //     })
-        //     var postGraduate = await Program.create({
-        //         name: "postGraduate",
-        //         description: "postGraduate courses that take 3 to 4 years",
-        //         duration: "3 to 4 years",
-        //         UniversityId: university.id
-        //     })
-        //     var advancedLearning = await Program.create({
-        //         name: "advancedLearning",
-        //         description: "advancedLearning courses that take 3 to 4 years",
-        //         duration: "3 to 4 years",
-        //         UniversityId: university.id
-        //     })
-
-        //     allPrograms.push(undergraduate, graduate, postGraduate, advancedLearning)
-            
-        // }
-
-        for(const program of allPrograms){
-            for(const course_name of courses){
-                const course = await Course.create({
-                    name: course_name,
-                    description: `this is a course for ${program.name} studies`,
-                    tuition: Math.floor(Math.random()*10000),
-                    duration: program.duration,
-                    ProgramId: program.id,
-                    UniversityId: program.UniversityId
-                })
-                allCourses.push(course)
-                // return allCourses
-            }
-        }
-
-        return{
-            error: false,
-            message: "all courses",
-            data: allCourses
-        }
-        
-    } catch (error) {
-        console.log(error);
-        return{
-            error: true,
-            message: error.message|| "Unable to retreive courses at the moment",
-            data: null
-        }
-    }
-}
 
 exports.getOneCourseById = async (data) => {
     try {
@@ -220,21 +142,24 @@ exports.getOneCourseById = async (data) => {
                 data: null
             } 
         }
-        const available_class = await Class.findAll({
-            attributes: ['name', "start_date", "end_date", "application_opening", "application_closing", ],
+        const available_classes = await Class.findAll({
+            attributes: {excludes: ['deleted' ]},
             where: {
                 application_closing: {[Op.lt]: currentDate}, 
-                CourseId: singleCourse.id
+                CourseId: singleCourse.id,
+                active: true
             }
         }) 
         const program_type = await Program.findOne({where: {id: singleCourse.ProgramId}})
         const courseDetails = {
+            id: singleCourse.id,
             name: singleCourse.name,
             description: singleCourse.description,
             tuition: singleCourse.tuition,
             duration: singleCourse.duration,
             program: program_type.name,
-            available_diet: available_class,
+            available_diet: available_classes,
+            university_id: singleCourse.UniversityId
         }
         return {
             error: false,
@@ -251,3 +176,143 @@ exports.getOneCourseById = async (data) => {
         
     }
 }
+exports.getallCoursesByUniversity = async(data)=>{
+    try {
+        const {
+            id,
+            limit,
+            page
+        } = data
+        const university = await University.findOne({
+            where: {id}
+        })
+
+        if(!university){
+            return {
+                error: true,
+                message: "University Not Found",
+                data: null
+            }
+        }
+        const allCourses = await getPaginatedRecords(Course, {
+            limit: Number(limit),
+            page: Number(page),
+            data:{UniversityId: university.id},
+            selectedFields: ['id', 'name', 'description', 'UniversityId', 'ProgramId']
+        })
+        return {
+            error: false,
+            message: "All courses retreived successfully",
+            data: {
+                allCourses: allCourses,
+                pagination: allCourses.perPage
+            }
+        }
+        
+    } catch (error) {
+       console.log(error)
+        return{
+            error: true,
+            message: error.message|| "Unable to retreive courses at the moment",
+            data: null
+        } 
+    }
+   
+}
+
+exports.getallCourses = async(data)=>{
+    try {
+        const {
+            limit,
+            page
+        } = data
+        const allCourses = await getPaginatedRecords(Course, {
+            limit: Number(limit),
+            page: Number(page),
+            selectedFields: ['id', 'name', 'description', 'UniversityId', 'ProgramId']
+        })
+        return {
+            error: false,
+            message: "All courses retreived successfully",
+            data: {
+                allCourses: allCourses,
+                pagination: allCourses.perPage
+            }
+        }
+        
+    } catch (error) {
+       console.log(error)
+        return{
+            error: true,
+            message: error.message|| "Unable to retreive courses at the moment",
+            data: null
+        } 
+    }
+   
+}
+
+// exports.seedCourses = async () => {
+//     try {
+        // let allPrograms = await Program.findAll()
+        // let allCourses = []
+        // const allUniversities = await University.findAll()
+        // for(const university of allUniversities){
+        //     var undergraduate = await Program.create({
+        //         name: "undergraduate",
+        //         description: "undergraduate courses that take 4 to 5 years",
+        //         duration: [4,5],
+        //         UniversityId: university.id
+        //     })
+        //     var graduate = await Program.create({
+        //         name: "graduate",
+        //         description: "graduate courses that take 1 to 2 years",
+        //         duration: [1,3],
+        //         UniversityId: university.id
+        //     })
+        //     var postGraduate = await Program.create({
+        //         name: "postGraduate",
+        //         description: "postGraduate courses that take 3 to 4 years",
+        //         duration: [2, 4],
+        //         UniversityId: university.id
+        //     })
+        //     var advancedLearning = await Program.create({
+        //         name: "advancedLearning",
+        //         description: "advancedLearning courses that take 3 to 4 years",
+        //         duration: [2,5],
+        //         UniversityId: university.id
+        //     })
+
+        //     allPrograms.push(undergraduate, graduate, postGraduate, advancedLearning)
+            
+        // }
+
+        // for(const program of allPrograms){
+        //     for(const course_name of courses){
+        //         const course = await Course.create({
+        //             name: course_name,
+        //             description: `this is a course for ${program.name} studies`,
+        //             tuition: Math.floor(Math.random()*10000),
+        //             duration: program.duration,
+        //             ProgramId: program.id,
+        //             UniversityId: program.UniversityId
+        //         })
+        //         allCourses.push(course)
+        //         // return allCourses
+        //     }
+        // }
+
+//         return{
+//             error: false,
+//             message: "all courses",
+//             data: allCourses
+//         }
+        
+//     } catch (error) {
+//         console.log(error);
+//         return{
+//             error: true,
+//             message: error.message|| "Unable to retreive courses at the moment",
+//             data: null
+//         }
+//     }
+// }

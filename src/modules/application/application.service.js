@@ -37,6 +37,21 @@ exports.createApplication = async (data) => {
                 data: null
             }
         }
+        const available_classes = await Class.findAll({where:{CourseId: intendingCourse.id}})
+        
+        const alreadyApplied = await Application.findOne({
+            where:{
+                email,
+                CourseId: intendingCourse.id
+            }
+        })
+        if(alreadyApplied){
+            return {
+                error: true,
+                message: "Already applied for the course"
+            }
+        }
+
         const application = await Application.create({
             first_name,
             last_name,
@@ -46,7 +61,8 @@ exports.createApplication = async (data) => {
             gender,
             tracking_id: 'APL'+ randomString(),
             application_fees: intendingCourse.application_fees,
-            CourseId: intendingCourse.id
+            CourseId: intendingCourse.id,
+            ClassId: available_classes[0].id
         })
 
         const tracker = await Tracker.create({
@@ -76,3 +92,109 @@ exports.createApplication = async (data) => {
     }
 }
 
+exports.searchApplicationByTrackingId = async (data) => {
+        try {
+        const {
+            tracking_id
+        } = data
+
+        const upper = tracking_id.toUpperCase()
+
+        const foundApplication = await Application.findAll({
+            where:{
+               tracking_id: {[Op.like]: `%${upper}%`}
+            }
+          })
+        if(Number(foundApplication.length) < 1) {
+            return {
+                error: true,
+                message: "No application found with that tracking ID",
+                data: null
+            }
+        }
+
+        // const appliedCourse = await Course.findOne({
+        //     where: {id: foundApplication.CourseId}
+        // })
+
+        return {
+            error: false,
+            message: "application retrieved successfully",
+            data: foundApplication
+        }
+
+    } catch (error) {
+        console.log(error)
+        return{
+            error: true,
+            message: error.message|| "Unable to fetch application at the moment",
+            data: null
+        }
+        
+    }
+}
+
+exports.viewApplication = async (data) => {
+        try {
+        const {
+            id
+        } = data
+
+
+        const foundApplication = await Application.findOne({
+            where:{id}
+          })
+        if(!foundApplication) {
+            return {
+                error: true,
+                message: "No application found",
+                data: null
+            }
+        }
+
+        const courseApplied = await Course.findOne({
+            where: {id: foundApplication.CourseId}
+        })
+
+        const courseProgram = await Program.findOne({
+            where: {id: courseApplied.ProgramId}
+        })
+
+        const intending_class = await Class.findOne({
+            where: {id: foundApplication.ClassId }
+        })
+        const application = {
+            id: foundApplication.id,
+            names: foundApplication.first_name + " " + foundApplication.last_name + " " + foundApplication.middle_name,
+            gender: foundApplication.gender,
+            email: foundApplication.email,
+            admission_status: foundApplication.status,
+            application_fees: foundApplication.application_fees,
+            intending_course: courseApplied.name,
+            course_description: courseApplied.description,
+            program: courseProgram.name,
+            duration: courseProgram.duration,
+            class: intending_class.class_year,
+            diet: intending_class.diet,
+            class_start_date: intending_class.start_date,
+            class_end_date: intending_class.end_date,
+            tuition: intending_class.course_tuition,
+            application_fees: intending_class.application_fees,
+            
+        }
+        return {
+            error: false,
+            message: "application retrieved successfully",
+            data: application
+        }
+
+    } catch (error) {
+        console.log(error)
+        return{
+            error: true,
+            message: error.message|| "Unable to fetch application at the moment",
+            data: null
+        }
+        
+    }
+}

@@ -2,12 +2,15 @@ const {Router} = require('express')
 const { authorize, authorizeMerchant } = require('../../common/middlewares/authorize')
 const validateRequest = require('../../common/middlewares/validateRequest')
 const {
-    createApplicationController
+    createApplicationController,
+    searchApplicationController,
+    viewApplicationController
 } = require('./application.controller')
 
 const {
     createApplicationSchema,
-    modelIdSchema
+    modelIdSchema,
+    seaerchApplicationSchema
 } = require('./application.schema')
 
 const router = Router()
@@ -19,5 +22,15 @@ router.post(
     createApplicationController
 )
 
+router.post(
+    '/search',
+    validateRequest(seaerchApplicationSchema, 'body'),
+    searchApplicationController
+)
 
+router.get(
+    '/view/:id',
+    validateRequest(modelIdSchema, 'params'),
+    viewApplicationController
+)
 module.exports = router

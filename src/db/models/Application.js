@@ -3,8 +3,8 @@ const {Model} = require('sequelize')
 module.exports = (sequelize, DataTypes) =>{
   class Application extends Model {
     static associate(models){
-        this.belongsTo(models.Course, {as: "Course"}),
-        this.belongsTo(models.Class, {as: "Class"})
+      this.belongsTo(models.Course, {as: "Course", onDelete: 'NO ACTION'}),
+      this.belongsTo(models.Class, {as: "Class", onDelete: 'NO ACTION'})
     }
   }
   Application.init(

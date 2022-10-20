@@ -4,7 +4,9 @@ const validateRequest = require('../../common/middlewares/validateRequest')
 const {
     searchForACourseController,
     seedCoursesController,
-    getOneCourseByIdController
+    getOneCourseByIdController,
+    getCoursesController,
+    getCoursesInAUniversityController
 } = require('./course.controller')
 
 const {
@@ -22,15 +24,27 @@ router.post(
     searchForACourseController
 )
 
-router.get(
-    '/seed',
-    seedCoursesController
-)
+// router.get(
+//     '/seed',
+//     seedCoursesController
+// )
 
 router.get(
     '/one/:id',
     validateRequest(modelIdSchema, 'params'),
     getOneCourseByIdController
+)
+
+router.get(
+    '/all',
+    validateRequest(paginateSchema, 'query'),
+    getCoursesController
+)
+router.get(
+    '/by-sch/:id',
+    validateRequest(paginateSchema, 'query'),
+    validateRequest(modelIdSchema, 'params'),
+    getCoursesInAUniversityController
 )
 
 module.exports = router

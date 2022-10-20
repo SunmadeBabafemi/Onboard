@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) =>{
   class Class extends Model {
     static associate(models){
       this.belongsTo(models.Course, {as: "Course"})
+      this,this.hasMany(models.Application, {as: "Application", onDelete: 'NO ACTION'})
     }
   }
   Class.init(
@@ -14,8 +15,13 @@ module.exports = (sequelize, DataTypes) =>{
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4
       },
-      name: {
-        type: DataTypes.STRING,
+      class_year: {
+        type: DataTypes.INTEGER,
+      },
+      class_diet :{
+        type: DataTypes.ENUM,
+        values:['Winter', 'Summer', 'Spring'],
+        defaultValue: 'Winter'
       },
       start_date: {
         type: DataTypes.DATE
@@ -23,11 +29,23 @@ module.exports = (sequelize, DataTypes) =>{
       end_date: {
         type: DataTypes.DATE
       },
+      active: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+      },
       application_opening: {
         type: DataTypes.DATE
       },
       application_closing: {
         type: DataTypes.DATE
+      },
+      application_fees: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+      },
+      course_tuition: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
       },
       deleted:{
         type: DataTypes.BOOLEAN,

@@ -1,12 +1,13 @@
 const models = require('../../db/models')
 var Sequelize = require('sequelize')
-const {getPaginatedRecords} = require('../../common/helpers/paginate')
+const {getPaginatedRecords, paginateRaw} = require('../../common/helpers/paginate')
 
 const {
     sequelize,
     University,
     Course,
-    Program
+    Program,
+    Review
 
 } = models
 
@@ -38,3 +39,43 @@ exports.getAllUniversities = async (data) => {
     }
 }
 
+
+exports.viewUniversity = async (data) => {
+    try {
+        const{
+            id,
+            limit,
+            page
+        } = data
+        const university = await University.findOne({
+            where:{id}
+        })
+        if(!university){
+            return {
+                error: true,
+                message: "University Not Found",
+                data: null
+            }
+        }
+
+        const allUniversityReviews = await Review.findAll({where: {UniversityId: university.id}})
+
+        const allCoursesOffered = await Course.findAll({where:{UniversityId: university.id}})
+        const pagedArray = [...allUniversityReviews, ...allCoursesOffered]
+        const paginatedResult = await paginateRaw(pagedArray, {
+            limit: Number(limit),
+            page: Number(page)
+        })
+        return {
+            error: false,
+            message: "University retrieved successfully",
+            data: {
+                university: university,
+                coursesAndReviews: paginatedResult,
+                pagination: paginatedResult.perPage
+            }
+        }
+    } catch (error) {
+        
+    }
+}

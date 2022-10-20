@@ -4,8 +4,8 @@ module.exports = (sequelize, DataTypes) =>{
   class Course extends Model {
     static associate(models){
       this.belongsTo(models.University, {as: "University"})
-      this.belongsTo(models.Program, {as: "Program"})
-
+      this.belongsTo(models.Program, {as: "Program", onDelete: 'SET NULL'})
+      this.hasMany(models.Class, {as: 'Class', onDelete: 'SET DEFAULT'})
     }
   }
   Course.init(
@@ -21,17 +21,6 @@ module.exports = (sequelize, DataTypes) =>{
       },
        description:{
         type: DataTypes.STRING,
-      },
-
-      tuition: {
-        type: DataTypes.INTEGER,
-      },
-      duration: {
-        type: DataTypes.STRING,
-      },
-      application_fees: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
       },
       deleted:{
         type: DataTypes.BOOLEAN,

@@ -2,29 +2,34 @@ const {Router} = require('express')
 const { authorize, authorizeMerchant } = require('../../common/middlewares/authorize')
 const validateRequest = require('../../common/middlewares/validateRequest')
 const {
-    getAllUniversitiesController,
-    viewAUniversityController
-} = require('./university.controller')
+    seedClassesController,
+    getallClassesController
+} = require('./class.controller')
 
 const {
     paginateSchema,
+    searchCourseSchema,
     modelIdSchema
-    
-} = require('./university.schema')
+} = require('./class.schema')
 
 const router = Router()
+
+// router.post(
+//     '/search',
+//     validateRequest(paginateSchema, 'query'),
+//     // validateRequest(searchCourseSchema, 'body'),
+//     searchForACourseController
+// )
+
+router.get(
+    '/seed',
+    validateRequest(paginateSchema, 'query'),
+    seedClassesController
+)
 
 router.get(
     '/all',
     validateRequest(paginateSchema, 'query'),
-    getAllUniversitiesController
+    getallClassesController
 )
-
-router.get(
-    '/view/:id',
-    validateRequest(paginateSchema, 'query'),
-    validateRequest(modelIdSchema, 'params'),
-    viewAUniversityController
-)
-
 module.exports = router

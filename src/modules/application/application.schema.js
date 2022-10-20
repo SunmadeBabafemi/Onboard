@@ -19,3 +19,8 @@ exports.createApplicationSchema = Joi.object({
 exports.modelIdSchema = Joi.object({
   id: Joi.string().required(),
 })
+
+exports.seaerchApplicationSchema = Joi.object({
+  tracking_id: Joi.string().required(),
+
+})

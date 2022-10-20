@@ -3,8 +3,8 @@ const {Model} = require('sequelize')
 module.exports = (sequelize, DataTypes) =>{
   class Program extends Model {
     static associate(models){
-      this.belongsTo(models.University, {as: "University"})
-      this.hasMany(models.Course, {as: "Course"})
+      this.belongsTo(models.University, {as: "University", onDelete: 'NO ACTION'})
+      this.hasMany(models.Course, {as: "Course", onDelete: 'SET NULL'})
 
     }
   }
@@ -23,7 +23,8 @@ module.exports = (sequelize, DataTypes) =>{
         type: DataTypes.STRING,
       },
       duration: {
-        type: DataTypes.STRING,
+        type:DataTypes.RANGE,
+        defaultValue: [3, 7]
       },
       deleted:{
         type: DataTypes.BOOLEAN,

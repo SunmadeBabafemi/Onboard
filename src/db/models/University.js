@@ -3,8 +3,7 @@ const {Model} = require('sequelize')
 module.exports = (sequelize, DataTypes) =>{
   class University extends Model {
     static associate(models){
-      this.hasMany(models.Program, {as: "Program"})
-
+      this.hasMany(models.Program, {as: "Program", onDelete: "SET NULL"})
     }
   }
   University.init(

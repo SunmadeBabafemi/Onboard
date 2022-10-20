@@ -9,3 +9,15 @@ exports.deliveryDate = () => {
     }
     return myDate
 }
+
+exports.setEndDateByYear = (a) => {
+    var myDate = new Date();
+    myDate.setFullYear(myDate.getFullYear() + Number(a))
+    return myDate
+}
+
+exports.setEndDateByMonth = (a) => {
+    var myDate = new Date();
+    myDate.setFullYear(myDate.getMonth() + Number(a))
+    return myDate
+}

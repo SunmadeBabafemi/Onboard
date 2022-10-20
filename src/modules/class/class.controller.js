@@ -2,18 +2,21 @@ const {HTTP} = require('../../common/constants/http')
 const {RESPONSE} = require('../../common/constants/response')
 const createError = require("../../common/helpers/createError");
 const { createResponse } = require("../../common/helpers/createResponse");
-const UniversityService = require('./university.service')
+const ClassService = require('./class.service')
 
-exports.getAllUniversitiesController = async (req, res, next) => {
+
+
+
+exports.seedClassesController = async (req, res, next) => {
     try {
-        const {error, message, data} = await UniversityService.getAllUniversities({
+        const {error, message, data} = await ClassService.seedClass({
             limit: req.query.limit,
             page: req.query.page
         })
-        const allData = {
-            pagination: data.pagination,
-            universities: data.allUniversities
-        }
+        // const allData = {
+        //     pagination: data.pagination,
+        //     courses: data.foundResults
+        // }
 
         if (error) {
         return next(
@@ -28,25 +31,24 @@ exports.getAllUniversitiesController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.CREATED);
     } catch (error) {
-        console.error(err);
+        console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }
 
-exports.viewAUniversityController = async (req, res, next) => {
+
+exports.getallClassesController = async (req, res, next) => {
     try {
-        const {error, message, data} = await UniversityService.viewUniversity({
-            id: req.params.id,
+        const {error, message, data} = await ClassService.getallClasses({
             limit: req.query.limit,
             page: req.query.page
         })
         const allData = {
-            university: data.university,
             pagination: data.pagination,
-            coursesAndReviews: data.coursesAndReviews
+            courses: data.allClasses
         }
 
         if (error) {
@@ -69,5 +71,3 @@ exports.viewAUniversityController = async (req, res, next) => {
         return next(createError.InternalServerError(error));
     }
 }
-
-

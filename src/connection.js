@@ -20,7 +20,7 @@ const testSequelize = async () => {
     // await db.sequelize.sync();
     // await db.sequelize.sync({ alter: true });
     // await db.sequelize.sync({ alter: {drop: false} });
-    // await db.sequelize.sync({ force: true });
+    // await db.sequelize.sync({ alter: true, force: true, });
     console.log('sequelize Connection has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);

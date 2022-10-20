@@ -10,6 +10,10 @@ module.exports = {
     dialect: "postgres",
     dialectOptions: {
       bigNumberStrings: true,
+       ssl: {
+        require: true,
+        rejectUnauthorized: false, // <<<<<<< YOU NEED THIS,
+      },
     },
   },
   test: {
@@ -30,7 +34,7 @@ module.exports = {
     host: secrets.host,
     port: secrets.dbPort,
     dialect: "postgres",
-    use_env_variable: "DATABASE_URL",
+    use_env_variable: "DB_URL",
     dialectOptions: {
       bigNumberStrings: true,
       //   ssl: {
@@ -38,7 +42,7 @@ module.exports = {
       //   },
       ssl: {
         require: true,
-        rejectUnauthorized: false, // <<<<<<< YOU NEED THIS
+        rejectUnauthorized: false, // <<<<<<< YOU NEED THIS,
       },
     },
   },

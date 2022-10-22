@@ -251,68 +251,77 @@ exports.getallCourses = async(data)=>{
    
 }
 
-// exports.seedCourses = async () => {
-//     try {
-        // let allPrograms = await Program.findAll()
-        // let allCourses = []
-        // const allUniversities = await University.findAll()
-        // for(const university of allUniversities){
-        //     var undergraduate = await Program.create({
-        //         name: "undergraduate",
-        //         description: "undergraduate courses that take 4 to 5 years",
-        //         duration: [4,5],
-        //         UniversityId: university.id
-        //     })
-        //     var graduate = await Program.create({
-        //         name: "graduate",
-        //         description: "graduate courses that take 1 to 2 years",
-        //         duration: [1,3],
-        //         UniversityId: university.id
-        //     })
-        //     var postGraduate = await Program.create({
-        //         name: "postGraduate",
-        //         description: "postGraduate courses that take 3 to 4 years",
-        //         duration: [2, 4],
-        //         UniversityId: university.id
-        //     })
-        //     var advancedLearning = await Program.create({
-        //         name: "advancedLearning",
-        //         description: "advancedLearning courses that take 3 to 4 years",
-        //         duration: [2,5],
-        //         UniversityId: university.id
-        //     })
+exports.seedCourses = async (data) => {
+    try {
+        const {limit, page} = data
+        let allPrograms = await Program.findAll()
+        let allCourses = []
+        const allUniversities = await University.findAll()
+        for(const university of allUniversities){
+            var undergraduate = await Program.create({
+                name: "undergraduate",
+                description: "undergraduate courses that take 4 to 5 years",
+                duration: 4,
+                UniversityId: university.id
+            })
+            var graduate = await Program.create({
+                name: "graduate",
+                description: "graduate courses that take 1 to 2 years",
+                duration: 2,
+                UniversityId: university.id
+            })
+            var postGraduate = await Program.create({
+                name: "postGraduate",
+                description: "postGraduate courses that take 3 to 4 years",
+                duration: 4,
+                UniversityId: university.id
+            })
+            var advancedLearning = await Program.create({
+                name: "advancedLearning",
+                description: "advancedLearning courses that take 3 to 4 years",
+                duration: 3,
+                UniversityId: university.id
+            })
 
-        //     allPrograms.push(undergraduate, graduate, postGraduate, advancedLearning)
+            allPrograms.push(undergraduate, graduate, postGraduate, advancedLearning)
             
-        // }
+        }
 
-        // for(const program of allPrograms){
-        //     for(const course_name of courses){
-        //         const course = await Course.create({
-        //             name: course_name,
-        //             description: `this is a course for ${program.name} studies`,
-        //             tuition: Math.floor(Math.random()*10000),
-        //             duration: program.duration,
-        //             ProgramId: program.id,
-        //             UniversityId: program.UniversityId
-        //         })
-        //         allCourses.push(course)
-        //         // return allCourses
-        //     }
-        // }
-
-//         return{
-//             error: false,
-//             message: "all courses",
-//             data: allCourses
-//         }
+        for(const program of allPrograms){
+            for(const course_name of courses){
+                const course = await Course.create({
+                    name: course_name,
+                    description: `this is a course for ${program.name} studies`,
+                    tuition: Math.floor(Math.random()*10000),
+                    duration: program.duration,
+                    ProgramId: program.id,
+                    UniversityId: program.UniversityId
+                })
+                allCourses.push(course)
+            }
+        }
+        const paginatedResult = await paginateRaw(
+            allCourses,
+            {
+                limit: Number(limit),
+                page: Number(page)
+            }
+            )
+        return{
+            error: false,
+            message: "all courses",
+            data: {
+                allCourses: paginatedResult,
+                pagination: paginatedResult.perPage
+            }
+        }
         
-//     } catch (error) {
-//         console.log(error);
-//         return{
-//             error: true,
-//             message: error.message|| "Unable to retreive courses at the moment",
-//             data: null
-//         }
-//     }
-// }
+    } catch (error) {
+        console.log(error);
+        return{
+            error: true,
+            message: error.message|| "Unable to retreive courses at the moment",
+            data: null
+        }
+    }
+}

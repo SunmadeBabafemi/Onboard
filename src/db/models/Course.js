@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) =>{
        description:{
         type: DataTypes.STRING,
       },
+      added_by:{
+        type: DataTypes.STRING,
+      },
       deleted:{
         type: DataTypes.BOOLEAN,
         defaultValue: false

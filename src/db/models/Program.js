@@ -23,8 +23,10 @@ module.exports = (sequelize, DataTypes) =>{
         type: DataTypes.STRING,
       },
       duration: {
-        type:DataTypes.RANGE,
-        defaultValue: [3, 7]
+        type:DataTypes.INTEGER,
+      },
+      added_by:{
+        type: DataTypes.STRING,
       },
       deleted:{
         type: DataTypes.BOOLEAN,

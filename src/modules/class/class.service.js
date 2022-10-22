@@ -21,28 +21,28 @@ exports.seedClass = async (data) => {
         page
        } = data
        
-        // const enums = ['Winter', 'Summer', 'Spring']
-        // const allCourses = await Course.findAll()
-        // const allClasses = []
-        // for (const course of allCourses){
-        //     for (let i = 0; i < enums.length; i++){
-        //         const course_class = await Class.create({
-        //             class_year: 2022,
-        //             class_diet: enums[i],
-        //             start_date: new Date(),
-        //             end_date: setEndDateByYear(2).toDateString(),
-        //             application_opening: new Date().toDateString(),
-        //             application_closing: setEndDateByMonth(3).toDateString(),
-        //             course_tuition: Math.floor(Math.random() * 10000),
-        //             CourseId: course.id
-        //         })
-        //         allClasses.push(course_class)
-        //     }
-        // }
-        // const paginatedClasses = await paginateRaw(allClasses, {
-        //     limit: Number(limit),
-        //     page: Number(page)
-        // })
+        const enums = ['Winter', 'Summer', 'Spring']
+        const allCourses = await Course.findAll()
+        const allClasses = []
+        for (const course of allCourses){
+            for (let i = 0; i < enums.length; i++){
+                const course_class = await Class.create({
+                    class_year: 2022,
+                    class_diet: enums[i],
+                    start_date: new Date(),
+                    end_date: setEndDateByYear(2).toDateString(),
+                    application_opening: new Date().toDateString(),
+                    application_closing: setEndDateByMonth(3).toDateString(),
+                    course_tuition: Math.floor(Math.random() * 10000),
+                    CourseId: course.id
+                })
+                allClasses.push(course_class)
+            }
+        }
+        const paginatedClasses = await paginateRaw(allClasses, {
+            limit: Number(limit),
+            page: Number(page)
+        })
         return {
             error: false,
             message: "classes seeded successfully",

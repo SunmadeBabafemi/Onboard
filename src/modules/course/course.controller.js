@@ -70,34 +70,37 @@ exports.searchForACourseController = async (req, res, next) => {
 }
 
 
-// exports.seedCoursesController = async (req, res, next) => {
-//     try {
-//         const {error, message, data} = await CourseService.seedCourses()
-//         // const allData = {
-//         //     pagination: data.pagination,
-//         //     courses: data.foundResults
-//         // }
+exports.seedCoursesController = async (req, res, next) => {
+    try {
+        const {error, message, data} = await CourseService.seedCourses({
+            limit: req.query.limit,
+            page: req.query.page
+        })
+        const allData = {
+            pagination: data.pagination,
+            courses: data.allCourses
+        }
 
-//         if (error) {
-//         return next(
-//             createError(HTTP.BAD_REQUEST, [
-//             {
-//                 status: RESPONSE.ERROR,
-//                 message,
-//                 statusCode:
-//                 data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
-//                 data,
-//             },
-//             ])
-//         );
-//         }
-//         return createResponse(message, data)(res, HTTP.CREATED);
-//     } catch (error) {
-//         console.error(error);
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, allData)(res, HTTP.CREATED);
+    } catch (error) {
+        console.error(error);
 
-//         return next(createError.InternalServerError(error));
-//     }
-// }
+        return next(createError.InternalServerError(error));
+    }
+}
 
 exports.getCoursesController = async (req, res, next) => {
     try {

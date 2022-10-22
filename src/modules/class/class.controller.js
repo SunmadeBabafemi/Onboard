@@ -13,10 +13,10 @@ exports.seedClassesController = async (req, res, next) => {
             limit: req.query.limit,
             page: req.query.page
         })
-        // const allData = {
-        //     pagination: data.pagination,
-        //     courses: data.foundResults
-        // }
+        const allData = {
+            pagination: data.pagination,
+            courses: data.foundResults
+        }
 
         if (error) {
         return next(
@@ -31,7 +31,7 @@ exports.seedClassesController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, allData)(res, HTTP.CREATED);
     } catch (error) {
         console.error(error);
 

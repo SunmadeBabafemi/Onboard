@@ -24,7 +24,8 @@ exports.createApplication = async (data) => {
             phone_number,
             email,
             nationality,
-            gender
+            gender,
+            user_id
         } = data
 
         const intendingCourse = await Course.findOne({
@@ -62,14 +63,15 @@ exports.createApplication = async (data) => {
             tracking_id: 'APL'+ randomString(),
             application_fees: intendingCourse.application_fees,
             CourseId: intendingCourse.id,
-            ClassId: available_classes[0].id
+            ClassId: available_classes[0].id,
+            user_id
         })
-
-        const tracker = await Tracker.create({
-            status: application.status,
-            tracking_id: application.tracking_id,
-            ApplicationId: application.id
-        })
+        
+        // const  tracker = await Tracker.create({
+        //     status: application.status,
+        //     tracking_id: application.tracking_id,
+        //     ApplicationId: application.id
+        // })
 
 
         return {
@@ -77,7 +79,7 @@ exports.createApplication = async (data) => {
             message: "application initiated, proceed to neccessary payment",
             data: {
                 application,
-                tracker
+                // tracker
             }
         }
 
@@ -93,16 +95,14 @@ exports.createApplication = async (data) => {
 }
 
 exports.searchApplicationByTrackingId = async (data) => {
-        try {
-        const {
-            tracking_id
-        } = data
-
+    try {
+        const {tracking_id, user_id} = data   
         const upper = tracking_id.toUpperCase()
 
         const foundApplication = await Application.findAll({
             where:{
-               tracking_id: {[Op.like]: `%${upper}%`}
+               tracking_id: {[Op.like]: `%${upper}%`},
+               user_id
             }
           })
         if(Number(foundApplication.length) < 1) {
@@ -112,10 +112,6 @@ exports.searchApplicationByTrackingId = async (data) => {
                 data: null
             }
         }
-
-        // const appliedCourse = await Course.findOne({
-        //     where: {id: foundApplication.CourseId}
-        // })
 
         return {
             error: false,
@@ -137,12 +133,16 @@ exports.searchApplicationByTrackingId = async (data) => {
 exports.viewApplication = async (data) => {
         try {
         const {
+            user_id,
             id
         } = data
 
 
         const foundApplication = await Application.findOne({
-            where:{id}
+            where:{
+                id,
+                user_id
+            }
           })
         if(!foundApplication) {
             return {
@@ -163,9 +163,13 @@ exports.viewApplication = async (data) => {
         const intending_class = await Class.findOne({
             where: {id: foundApplication.ClassId }
         })
+        const names = foundApplication?.middle_name?
+            foundApplication.first_name + " " + foundApplication.last_name + " " + foundApplication.middle_name:
+                foundApplication.first_name + " " + foundApplication.last_name 
+        
         const application = {
             id: foundApplication.id,
-            names: foundApplication.first_name + " " + foundApplication.last_name + " " + foundApplication.middle_name,
+            names,
             gender: foundApplication.gender,
             email: foundApplication.email,
             admission_status: foundApplication.status,
@@ -180,12 +184,100 @@ exports.viewApplication = async (data) => {
             class_end_date: intending_class.end_date,
             tuition: intending_class.course_tuition,
             application_fees: intending_class.application_fees,
+            tracking_id: foundApplication.tracking_id
             
         }
         return {
             error: false,
             message: "application retrieved successfully",
             data: application
+        }
+
+    } catch (error) {
+        console.log(error)
+        return{
+            error: true,
+            message: error.message|| "Unable to fetch application at the moment",
+            data: null
+        }
+        
+    }
+}
+
+
+exports.myApplications = async (data) => {
+        try {
+        const {
+            limit,
+            page,
+            user_id,
+        } = data
+        let myApplications = []
+
+        const foundApplications = await Application.findAll({
+            where:{
+                user_id
+            }
+          })
+        if(foundApplications.length < 1) {
+            return {
+                error: true,
+                message: "No applications found",
+                data: null
+            }
+        }
+        for (const foundApplication of foundApplications){
+            const courseApplied = await Course.findOne({
+                where: {id: foundApplication.CourseId}
+            })
+
+            const courseProgram = await Program.findOne({
+                where: {id: courseApplied.ProgramId}
+            })
+
+            const intending_class = await Class.findOne({
+                where: {id: foundApplication.ClassId }
+            })
+            const names = foundApplication?.middle_name?
+                foundApplication.first_name + " " + foundApplication.last_name + " " + foundApplication.middle_name:
+                    foundApplication.first_name + " " + foundApplication.last_name 
+            
+            const application = {
+                id: foundApplication.id,
+                names,
+                gender: foundApplication.gender,
+                email: foundApplication.email,
+                admission_status: foundApplication.status,
+                application_fees: foundApplication.application_fees,
+                intending_course: courseApplied.name,
+                course_description: courseApplied.description,
+                program: courseProgram.name,
+                duration: courseProgram.duration,
+                class: intending_class.class_year,
+                diet: intending_class.diet,
+                class_start_date: intending_class.start_date,
+                class_end_date: intending_class.end_date,
+                tuition: intending_class.course_tuition,
+                application_fees: intending_class.application_fees,
+                tracking_id: foundApplication.tracking_id
+                
+            }
+            myApplications.push(application)
+        }
+        const paginatedResults = await paginateRaw(
+            myApplications,
+            {
+                limit: Number(limit),
+                page: Number(page)
+            }
+        )
+        return {
+            error: false,
+            message: "application retrieved successfully",
+            data: {
+                pagination: paginatedResults.perPage,
+                allMyApplications: paginatedResults
+            }
         }
 
     } catch (error) {

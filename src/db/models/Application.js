@@ -59,6 +59,9 @@ module.exports = (sequelize, DataTypes) =>{
       result:{
         type: DataTypes.STRING
       },
+      user_id: {
+        type: DataTypes.STRING,
+      },
       deleted:{
         type: DataTypes.BOOLEAN,
         defaultValue: false

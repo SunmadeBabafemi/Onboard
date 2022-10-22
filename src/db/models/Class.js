@@ -47,6 +47,9 @@ module.exports = (sequelize, DataTypes) =>{
         type: DataTypes.INTEGER,
         defaultValue: 0
       },
+      added_by:{
+        type: DataTypes.STRING,
+      },
       deleted:{
         type: DataTypes.BOOLEAN,
         defaultValue: false

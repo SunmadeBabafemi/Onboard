@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) =>{
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4
       },
-      fullName: {
+      full_name: {
         type: DataTypes.STRING
       },
       email: {
@@ -27,16 +27,16 @@ module.exports = (sequelize, DataTypes) =>{
       password: {
         type: DataTypes.STRING,
       },
-      // role: {
-      //   type: DataTypes.ENUM,
-      //   values:["super", "admin"],
-      //   // defaultValue: "admin",
-      // },
+      role: {
+        type: DataTypes.ENUM,
+        values:["super", "admin"],
+        defaultValue: "admin",
+      },
       isBlocked: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
-      refreshTokens: {
+      access_tokens: {
         type: DataTypes.STRING
       },
       deleted:{

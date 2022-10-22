@@ -2,21 +2,38 @@ const {HTTP} = require('../../common/constants/http')
 const {RESPONSE} = require('../../common/constants/response')
 const createError = require("../../common/helpers/createError");
 const { createResponse } = require("../../common/helpers/createResponse");
-const ApplicationService = require('./application.service')
+const UserService = require('./user.service')
 
-
-exports.createApplicationController = async (req, res, next) => {
+exports.registerUserController = async (req, res, next) => {
     try {
-        const {error, message, data} = await ApplicationService.createApplication({
-            id: req.params.id,
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            phone_number: req.body.phone_number,
-            email: req.body.email,
-            nationality: req.body.nationality,
-            gender: req.body.gender,
-            user_id: req.userId
+        const {error, message, data} = await UserService.registerUser({
+            ...req.body
         })
+
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                    data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, data)(res, HTTP.CREATED);
+    } catch (error) {
+        console.error(err);
+
+        return next(createError.InternalServerError(err));
+    }
+}
+
+exports.loginUserController = async (req, res, next) => {
+    try {
+        const {error, message, data} = await UserService.loginUser(req.user,req.body)
 
         if (error) {
         return next(
@@ -33,20 +50,15 @@ exports.createApplicationController = async (req, res, next) => {
         }
         return createResponse(message, data)(res, HTTP.CREATED);
     } catch (error) {
-        console.error(error);
+        console.error(err);
 
-        return next(createError.InternalServerError(error));
+        return next(createError.InternalServerError(err));
     }
 }
 
-
-
-exports.searchApplicationController = async (req, res, next) => {
+exports.logoutUserController = async (req, res, next) => {
     try {
-        const {error, message, data} = await ApplicationService.searchApplicationByTrackingId({
-            user_id: req.userId,    
-            tracking_id: req.body.tracking_id
-        })
+        const {error, message, data} = await UserService.logoutUser(req.token)
 
         if (error) {
         return next(
@@ -63,18 +75,16 @@ exports.searchApplicationController = async (req, res, next) => {
         }
         return createResponse(message, data)(res, HTTP.CREATED);
     } catch (error) {
-        console.error(error);
+        console.error(err);
 
-        return next(createError.InternalServerError(error));
+        return next(createError.InternalServerError(err));
     }
 }
 
-exports.viewApplicationController = async (req, res, next) => {
+
+exports.forgotPasswordController = async (req, res, next) => {
     try {
-        const {error, message, data} = await ApplicationService.viewApplication({
-            id: req.params.id,
-            user_id: req.userId
-        })
+        const {error, message, data} = await UserService.forgotPassword(req.body)
 
         if (error) {
         return next(
@@ -91,23 +101,16 @@ exports.viewApplicationController = async (req, res, next) => {
         }
         return createResponse(message, data)(res, HTTP.CREATED);
     } catch (error) {
-        console.error(error);
+        console.error(err);
 
-        return next(createError.InternalServerError(error));
+        return next(createError.InternalServerError(err));
     }
 }
 
-exports.myApplicationsController = async (req, res, next) => {
+exports.resetPasswordController = async (req, res, next) => {
     try {
-        const {error, message, data} = await ApplicationService.myApplications({
-            limit: req.query.limit,
-            page: req.query.page,
-            user_id: req.userId
-        })
-        const allData = {
-            allMyApplications: data.allMyApplications,
-            pagination: data.pagination
-        }
+        const {error, message, data} = await UserService.resetPassword(req.body)
+
         if (error) {
         return next(
             createError(HTTP.BAD_REQUEST, [
@@ -121,11 +124,10 @@ exports.myApplicationsController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.CREATED);
     } catch (error) {
-        console.error(error);
+        console.error(err);
 
-        return next(createError.InternalServerError(error));
+        return next(createError.InternalServerError(err));
     }
 }
-

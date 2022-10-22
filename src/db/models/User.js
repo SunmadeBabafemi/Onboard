@@ -1,12 +1,11 @@
 const {Model} = require('sequelize')
 
 module.exports = (sequelize, DataTypes) =>{
-  class Tracker extends Model {
+  class User extends Model {
     static associate(models){
-      this.belongsTo(models.Application, {as: "Application"})
     }
   }
-  Tracker.init(
+  User.init(
     {
       id: {
         primaryKey: true,
@@ -14,17 +13,25 @@ module.exports = (sequelize, DataTypes) =>{
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4
       },
-      status:{
-        type: DataTypes.ENUM,
-        values: [
-          'in review', 
-          'pending', 
-          'granted', 
-          'denied'
-        ],
-        defaultValue: 'pending'
+      full_name: {
+        type: DataTypes.STRING
       },
-      tracking_id:{
+      email: {
+        unique: true,
+        type: DataTypes.STRING,
+      },
+      phone_number:{
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      password: {
+        type: DataTypes.STRING,
+      },
+      isBlocked: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+      accessTokens: {
         type: DataTypes.STRING
       },
       deleted:{
@@ -32,14 +39,14 @@ module.exports = (sequelize, DataTypes) =>{
         defaultValue: false
       }
     },
+
     {
       sequelize,
-      modelName: "Tracker",
+      modelName: "User",
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",
     }
   )
-  return Tracker
-  
+  return User
 }

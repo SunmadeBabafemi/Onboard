@@ -26,6 +26,7 @@ router.post(
 
 // router.get(
 //     '/seed',
+//     validateRequest(paginateSchema, 'query'),
 //     seedCoursesController
 // )
 

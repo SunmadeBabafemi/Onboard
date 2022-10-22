@@ -35,6 +35,9 @@ module.exports = (sequelize, DataTypes) =>{
       ratings:{
         type: DataTypes.INTEGER
       },
+      added_by: {
+        type: DataTypes.STRING,
+      },
       deleted:{
         type: DataTypes.BOOLEAN,
         defaultValue: false

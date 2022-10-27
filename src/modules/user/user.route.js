@@ -6,6 +6,7 @@ const {
  registerUserController,
  loginUserController,
  logoutUserController,
+ completeSignupController,
  forgotPasswordController,
  resetPasswordController
 } = require('./user.controller')
@@ -13,7 +14,8 @@ const {
  registerUserSchema,
  loginUserSchema,
  forgotPasswordSchema,
- resetPasswordSchema
+ resetPasswordSchema,
+ verifyUserSchema
 } = require('./user.schema')
 
 const router = Router()
@@ -23,6 +25,13 @@ router.post(
     validateRequest(registerUserSchema, "body"),
     registerUserController
 )
+
+router.post(
+    '/signup/confirm',
+    validateRequest(verifyUserSchema, "body"),
+    completeSignupController
+)
+
 router.post(
     '/login',
     validateRequest(loginUserSchema, "body"),

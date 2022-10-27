@@ -67,6 +67,8 @@ exports.seachForCourse = async (data) => {
                 })
                 result.push(...available_course)                
             }
+
+
         }
         else if (
             Number(foundCourse.length) > 0 
@@ -95,7 +97,6 @@ exports.seachForCourse = async (data) => {
             }
         }
  
-        console.log('>>>>>>>>>>>COurse Found', result);
 
         // paginate the result
         const paginatedResult = await paginateRaw(result, {
@@ -108,13 +109,14 @@ exports.seachForCourse = async (data) => {
                 message: "No result found based on your search filter",
                 data: null
             }
-        }
-        return {
-            error: false,
-            message: "search result retreived successfully",
-            data: {
-                foundResults: paginatedResult,
-                pagination: paginatedResult.perPage
+        } else{
+            return {
+                error: false,
+                message: "search result retreived successfully",
+                data: {
+                    foundResults: paginatedResult,
+                    pagination: paginatedResult.perPage
+                }
             }
         }
 

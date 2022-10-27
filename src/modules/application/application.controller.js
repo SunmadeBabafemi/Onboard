@@ -8,7 +8,8 @@ const ApplicationService = require('./application.service')
 exports.createApplicationController = async (req, res, next) => {
     try {
         const {error, message, data} = await ApplicationService.createApplication({
-            id: req.params.id,
+            course_id: req.params.course_id,
+            class_id:req.params.class_id,
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             phone_number: req.body.phone_number,
@@ -39,6 +40,34 @@ exports.createApplicationController = async (req, res, next) => {
     }
 }
 
+exports.uploadResultController = async (req, res, next) => {
+    try {
+        const {error, message, data} = await ApplicationService.uploadPdfResult({
+            id: req.params.id,
+            user_id: req.userId,
+            result: req.file.path
+        })
+
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, data)(res, HTTP.CREATED);
+    } catch (error) {
+        console.error(error);
+
+        return next(createError.InternalServerError(error));
+    }
+}
 
 
 exports.searchApplicationController = async (req, res, next) => {

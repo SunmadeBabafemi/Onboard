@@ -7,6 +7,10 @@ exports.registerUserSchema = Joi.object().keys({
     password: Joi.string().required()
 })
 
+exports.verifyUserSchema = Joi.object().keys({
+    otp: Joi.string().required(),
+})
+
 exports.loginUserSchema = Joi.object().keys({
     email: Joi.string().trim().optional().label("email"),
     password: Joi.string().when("auth_type", {

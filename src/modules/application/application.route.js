@@ -1,6 +1,7 @@
 const {Router} = require('express')
 const { authorize, authorizeMerchant } = require('../../common/middlewares/authorize')
 const validateRequest = require('../../common/middlewares/validateRequest')
+const upload = require('../../common/config/multer')
 const {
     createApplicationController,
     searchApplicationController,
@@ -12,17 +13,26 @@ const {
     createApplicationSchema,
     modelIdSchema,
     paginateSchema,
-    seaerchApplicationSchema
+    seaerchApplicationSchema,
+    applicationIdSchema
 } = require('./application.schema')
 
 const router = Router()
 
 router.post(
-    '/create/:id',
+    '/create/:course_id/:class_id',
     authorize(),
-    validateRequest(modelIdSchema, 'params'),
+    validateRequest(applicationIdSchema, 'params'),
     validateRequest(createApplicationSchema, 'body'),
     createApplicationController
+)
+
+router.patch(
+    '/upload/:id',
+    authorize(),
+    upload.single('result'),
+    validateRequest(modelIdSchema, 'params'),
+    viewApplicationController
 )
 
 router.post(

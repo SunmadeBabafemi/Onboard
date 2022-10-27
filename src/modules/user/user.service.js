@@ -1,10 +1,12 @@
 const models = require('../../db/models')
 var Sequelize = require('sequelize')
-const {hashPassword, comparePassword, forgotPassword, resetPassword} = require('../../common/helpers/password')
-const {jwtSign, jwtVerify} = require('../../common/helpers/token')
+const {hashPassword, comparePassword, forgotPassword, resetPassword, completeSignup} = require('../../common/helpers/password')
+const {jwtSign, jwtVerify, jwtDecode} = require('../../common/helpers/token')
 const {
     sequelize,
     User,
+    OneTimePassword
+     
 } = models
 
 exports.registerUser = async (data) =>{
@@ -34,11 +36,13 @@ exports.registerUser = async (data) =>{
             },
             {raw: true}
         )
+        
+        const signup = await completeSignup(User, newUser.email)
 
         return {
-            error: false,
-            message: "User registered successfully",
-            data: newUser
+            error: signup.error,
+            message: signup.message,
+            data: signup.data
         }
 
     } catch (error) {
@@ -49,6 +53,44 @@ exports.registerUser = async (data) =>{
         }
         
     }
+}
+
+exports.completeSignup = async (otp) => {
+    try {
+        const existingOtp = await OneTimePassword.findOne({where: {otp}})
+        if(!existingOtp){
+            return {
+            error: true,
+            message: "Wrong OTP inputed",
+            data: null
+            };
+        }
+        const {id} = await jwtDecode(existingOtp.signedToken)
+        await User.update(
+            {isVerified: true},
+            {where:{id}}
+        )
+
+        await OneTimePassword.destroy({where: {otp}})
+        const verfiedUser = await User.findOne({
+            attributes:{excludes:['deleted']},
+            where:{id}
+        })
+
+        return {
+            error: false,
+            message: "User verification successful",
+            data: verfiedUser
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: error.message || "unable to verify user at the moment",
+            data: null
+        }
+    }
+    
 }
 
 exports.loginUser = async(user, data) => {

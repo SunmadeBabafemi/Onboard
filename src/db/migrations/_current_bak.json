@@ -239,6 +239,10 @@
                     "field": "course_tuition",
                     "seqType": "Sequelize.INTEGER"
                 },
+                "added_by": {
+                    "field": "added_by",
+                    "seqType": "Sequelize.STRING"
+                },
                 "deleted": {
                     "defaultValue": {
                         "value": false
@@ -402,6 +406,10 @@
                 "duration": {
                     "field": "duration",
                     "seqType": "Sequelize.INTEGER"
+                },
+                "added_by": {
+                    "field": "added_by",
+                    "seqType": "Sequelize.STRING"
                 },
                 "deleted": {
                     "defaultValue": {
@@ -596,6 +604,13 @@
                     "field": "accessTokens",
                     "seqType": "Sequelize.STRING"
                 },
+                "isVerified": {
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "isVerified",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
                 "deleted": {
                     "defaultValue": {
                         "value": false
@@ -617,5 +632,5 @@
             "indexes": []
         }
     },
-    "revision": 7
+    "revision": 9
 }

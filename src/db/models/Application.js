@@ -62,6 +62,9 @@ module.exports = (sequelize, DataTypes) =>{
       user_id: {
         type: DataTypes.STRING,
       },
+      class_diet: {
+        type: DataTypes.STRING,
+      },
       deleted:{
         type: DataTypes.BOOLEAN,
         defaultValue: false

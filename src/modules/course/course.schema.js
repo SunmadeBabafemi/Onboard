@@ -8,6 +8,8 @@ exports.paginateSchema = Joi.object({
 });
 
 exports.searchCourseSchema = Joi.object({
+  page: Joi.number().positive().optional(),
+  limit: Joi.number().positive().optional(),
   school_name: Joi.string().optional(),
   program_name: Joi.string().optional(),
   course_name: Joi.string().optional(),

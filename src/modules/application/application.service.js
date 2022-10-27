@@ -1,8 +1,10 @@
 const models = require('../../db/models')
 var Sequelize = require('sequelize')
 const {Op} = Sequelize
+const upload = require('express-fileupload')
 const randomString = require('../../common/helpers/randString')
 const {getPaginatedRecords, paginateRaw} = require('../../common/helpers/paginate')
+const { FileUploader } = require('../../common/helpers/cloudinaryUpload')
 const {
     sequelize,
     University,
@@ -19,7 +21,8 @@ exports.createApplication = async (data) => {
         try {
         const {
             first_name,
-            id,
+            course_id,
+            class_id,
             last_name, 
             phone_number,
             email,
@@ -29,7 +32,7 @@ exports.createApplication = async (data) => {
         } = data
 
         const intendingCourse = await Course.findOne({
-            where:{id}
+            where:{id: course_id}
         })
         if(!intendingCourse){
             return {
@@ -38,12 +41,13 @@ exports.createApplication = async (data) => {
                 data: null
             }
         }
-        const available_classes = await Class.findAll({where:{CourseId: intendingCourse.id}})
+        const intendingClass = await Class.findOne({where:{id: class_id}})
         
         const alreadyApplied = await Application.findOne({
             where:{
                 email,
-                CourseId: intendingCourse.id
+                CourseId: intendingCourse.id,
+                ClassId: class_id
             }
         })
         if(alreadyApplied){
@@ -61,9 +65,10 @@ exports.createApplication = async (data) => {
             nationality,
             gender,
             tracking_id: 'APL'+ randomString(),
-            application_fees: intendingCourse.application_fees,
+            application_fees: intendingClass.application_fees,
+            class_diet: intendingClass.class_diet,
             CourseId: intendingCourse.id,
-            ClassId: available_classes[0].id,
+            ClassId: class_id,
             user_id
         })
         
@@ -91,6 +96,35 @@ exports.createApplication = async (data) => {
             data: null
         }
         
+    }
+}
+
+exports.uploadPdfResult = async (data) => {
+    try {const {result, id, user_id} = data
+        const url = await FileUploader(result)
+        await Application.update(
+            {result: url},
+            {where:{
+                    id,
+                    user_id
+                }
+            }
+        )
+        const completedApplication = await Application.findOne({
+            attributes:{excludes:["deleted"]},
+            where:{id}})
+        return {
+            error: false,
+            message: "Result uploaded successfully",
+            data: completedApplication
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: "Unable to complete application at the moment" || error.message,
+            data: null
+        }
     }
 }
 
@@ -184,7 +218,8 @@ exports.viewApplication = async (data) => {
             class_end_date: intending_class.end_date,
             tuition: intending_class.course_tuition,
             application_fees: intending_class.application_fees,
-            tracking_id: foundApplication.tracking_id
+            tracking_id: foundApplication.tracking_id,
+            class_diet: foundApplication.class_diet
             
         }
         return {

@@ -13,6 +13,9 @@ exports.comparePassword = (hashedPassword, password) => {
   return bcrypt.compareSync(password, hashedPassword);
 };
 
+
+
+
 exports.forgotPassword = async (model, email,) =>{
   const existingModel = await model.findOne({
     where:{email}
@@ -83,4 +86,40 @@ exports.resetPassword = async(
 
   await OneTimePassword.destroy({where: {otp}})
   return {model: updatedModel, email: updatedModel.email}
+}
+
+exports.completeSignup = async (model, email,) =>{
+  const existingModel = await model.findOne({
+    where:{email}
+  })
+  if(!existingModel){
+    return{
+      error: true,
+      message: 'Email not found on server',
+      data: null
+    }
+  }
+  const signedToken = jwtSignOtp(existingModel.id)
+  const existingOtp = await OneTimePassword.findOne({where:{signedToken}})
+  if(existingOtp){
+    await OneTimePassword.destroy({where:{signedToken}})
+  }
+  const otp = (Math.floor(Math.random() * 899999+100000)).toString()
+
+  await OneTimePassword.create({
+    signedToken,
+    otp
+  })
+  const mailPayload = {
+    email: existingModel.email,
+    mailSubject: "Signup confirmation",
+    fullName: existingModel.full_name,
+    otp: otp
+  }
+  const mail = await sendOTPtoMail(mailPayload)
+  return{
+    error: false,
+    message: mail.message,
+    data: mail.data
+  }
 }

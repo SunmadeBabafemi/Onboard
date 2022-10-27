@@ -136,6 +136,10 @@
                     "field": "user_id",
                     "seqType": "Sequelize.STRING"
                 },
+                "class_diet": {
+                    "field": "class_diet",
+                    "seqType": "Sequelize.STRING"
+                },
                 "deleted": {
                     "defaultValue": {
                         "value": false
@@ -604,6 +608,13 @@
                     "field": "accessTokens",
                     "seqType": "Sequelize.STRING"
                 },
+                "isVerified": {
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "isVerified",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
                 "deleted": {
                     "defaultValue": {
                         "value": false
@@ -625,5 +636,5 @@
             "indexes": []
         }
     },
-    "revision": 8
+    "revision": 10
 }

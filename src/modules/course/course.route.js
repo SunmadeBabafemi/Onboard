@@ -17,10 +17,9 @@ const {
 
 const router = Router()
 
-router.post(
+router.get(
     '/search',
-    validateRequest(paginateSchema, 'query'),
-    // validateRequest(searchCourseSchema, 'body'),
+    validateRequest(searchCourseSchema, 'query'),
     searchForACourseController
 )
 

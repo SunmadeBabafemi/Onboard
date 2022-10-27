@@ -38,15 +38,21 @@ exports.searchForACourseController = async (req, res, next) => {
         const {error, message, data} = await CourseService.seachForCourse({
             limit: req.query.limit,
             page: req.query.page,
-            school_name: req.body.school_name,
-            program_name: req.body.program_name,
-            course_name: req.body.course_name,
-            country_name: req.body.country_name
+            school_name: req.query.school_name,
+            program_name: req.query.program_name,
+            course_name: req.query.course_name,
+            country_name: req.query.country_name
         })
-        const allData = {
-            pagination: data.pagination,
-            courses: data.foundResults
+        let allData = {}
+        if(Boolean(error ) === false){
+             allData = {
+                pagination: data.pagination,
+                courses: data.foundResults
+            }
+        } else {
+            allData = data
         }
+       
 
         if (error) {
         return next(

@@ -34,6 +34,10 @@ module.exports = (sequelize, DataTypes) =>{
       accessTokens: {
         type: DataTypes.STRING
       },
+      isVerified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
       deleted:{
         type: DataTypes.BOOLEAN,
         defaultValue: false

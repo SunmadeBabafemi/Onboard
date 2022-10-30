@@ -470,6 +470,10 @@
                     "field": "rating",
                     "seqType": "Sequelize.INTEGER"
                 },
+                "author": {
+                    "field": "author",
+                    "seqType": "Sequelize.STRING"
+                },
                 "deleted": {
                     "defaultValue": {
                         "value": false
@@ -528,6 +532,14 @@
                 },
                 "picture_2": {
                     "field": "picture_2",
+                    "seqType": "Sequelize.STRING"
+                },
+                "picture_3": {
+                    "field": "picture_3",
+                    "seqType": "Sequelize.STRING"
+                },
+                "picture_4": {
+                    "field": "picture_4",
                     "seqType": "Sequelize.STRING"
                 },
                 "address": {
@@ -636,5 +648,5 @@
             "indexes": []
         }
     },
-    "revision": 10
+    "revision": 12
 }

@@ -95,6 +95,12 @@ exports.seachForCourse = async (data) => {
                 }
 
             }
+        } else if (
+            Number(foundCourse.length) < 1
+            && Number(foundProgram.length) < 1 
+            && Number(foundUniversity.length) > 0 
+        ) {
+            
         }
  
 

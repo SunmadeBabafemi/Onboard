@@ -6,7 +6,8 @@ const {
     createApplicationController,
     searchApplicationController,
     viewApplicationController,
-    myApplicationsController
+    myApplicationsController,
+    uploadResultController
 } = require('./application.controller')
 
 const {
@@ -22,18 +23,12 @@ const router = Router()
 router.post(
     '/create/:course_id/:class_id',
     authorize(),
+    upload.single('result'),
     validateRequest(applicationIdSchema, 'params'),
     validateRequest(createApplicationSchema, 'body'),
     createApplicationController
 )
 
-router.patch(
-    '/upload/:id',
-    authorize(),
-    upload.single('result'),
-    validateRequest(modelIdSchema, 'params'),
-    viewApplicationController
-)
 
 router.post(
     '/search',

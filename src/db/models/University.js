@@ -26,6 +26,12 @@ module.exports = (sequelize, DataTypes) =>{
       picture_2:{
         type: DataTypes.STRING,
       },
+      picture_3:{
+        type: DataTypes.STRING,
+      },
+      picture_4:{
+        type: DataTypes.STRING,
+      },
       address:{
         type: DataTypes.STRING,
       },

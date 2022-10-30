@@ -3,6 +3,7 @@ const universities = require('./university/university.route.js')
 const courses = require('./course/course.route')
 const application = require('./application/application.route')
 const course_class = require('./class/class.route')
+const reviews = require('./review/review.route')
 const users = require("./user/user.route");
 const admin_admin = require("./admin/admin/admin-admin.route");
 const admin_course = require("./admin/course/admin-course.route");
@@ -23,6 +24,7 @@ module.exports = () => {
   router.use('/application', application)
   router.use('/class', course_class)
   router.use("/user", users);
+  router.use('/review', reviews)
 
   // admin routes
   router.use("/admin", admin_admin);

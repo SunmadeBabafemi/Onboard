@@ -16,36 +16,8 @@ exports.createApplicationController = async (req, res, next) => {
             email: req.body.email,
             nationality: req.body.nationality,
             gender: req.body.gender,
-            user_id: req.userId
-        })
-
-        if (error) {
-        return next(
-            createError(HTTP.BAD_REQUEST, [
-            {
-                status: RESPONSE.ERROR,
-                message,
-                statusCode:
-                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
-                data,
-            },
-            ])
-        );
-        }
-        return createResponse(message, data)(res, HTTP.CREATED);
-    } catch (error) {
-        console.error(error);
-
-        return next(createError.InternalServerError(error));
-    }
-}
-
-exports.uploadResultController = async (req, res, next) => {
-    try {
-        const {error, message, data} = await ApplicationService.uploadPdfResult({
-            id: req.params.id,
             user_id: req.userId,
-            result: req.file.path
+            result: req.file
         })
 
         if (error) {

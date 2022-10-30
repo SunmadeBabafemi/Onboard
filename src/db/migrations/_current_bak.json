@@ -136,6 +136,10 @@
                     "field": "user_id",
                     "seqType": "Sequelize.STRING"
                 },
+                "class_diet": {
+                    "field": "class_diet",
+                    "seqType": "Sequelize.STRING"
+                },
                 "deleted": {
                     "defaultValue": {
                         "value": false
@@ -526,6 +530,14 @@
                     "field": "picture_2",
                     "seqType": "Sequelize.STRING"
                 },
+                "picture_3": {
+                    "field": "picture_3",
+                    "seqType": "Sequelize.STRING"
+                },
+                "picture_4": {
+                    "field": "picture_4",
+                    "seqType": "Sequelize.STRING"
+                },
                 "address": {
                     "field": "address",
                     "seqType": "Sequelize.STRING"
@@ -632,5 +644,5 @@
             "indexes": []
         }
     },
-    "revision": 9
+    "revision": 11
 }

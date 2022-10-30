@@ -10,3 +10,10 @@ exports.paginateSchema = Joi.object({
 exports.modelIdSchema = Joi.object({
   id: Joi.string().required(),
 })
+
+exports.addUniversitySchema = Joi.object({
+  name: Joi.string().required(),
+  description: Joi.string().required(),
+  address: Joi.string().required(),
+  country: Joi.string().required(),
+})

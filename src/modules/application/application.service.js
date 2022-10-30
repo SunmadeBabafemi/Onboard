@@ -12,7 +12,6 @@ const {
     Program,
     Class,
     Application,
-    Tracker
 
 } = models
 
@@ -28,8 +27,13 @@ exports.createApplication = async (data) => {
             email,
             nationality,
             gender,
-            user_id
+            user_id,
+            result,
         } = data
+        // fetch url for result upload
+        const {path} = result
+        const url = await FileUploader(path)
+
 
         const intendingCourse = await Course.findOne({
             where:{id: course_id}
@@ -69,23 +73,15 @@ exports.createApplication = async (data) => {
             class_diet: intendingClass.class_diet,
             CourseId: intendingCourse.id,
             ClassId: class_id,
-            user_id
+            user_id,
+            result: url
         })
         
-        // const  tracker = await Tracker.create({
-        //     status: application.status,
-        //     tracking_id: application.tracking_id,
-        //     ApplicationId: application.id
-        // })
-
 
         return {
             error: false,
             message: "application initiated, proceed to neccessary payment",
-            data: {
-                application,
-                // tracker
-            }
+            data: application,
         }
 
     } catch (error) {
@@ -99,34 +95,7 @@ exports.createApplication = async (data) => {
     }
 }
 
-exports.uploadPdfResult = async (data) => {
-    try {const {result, id, user_id} = data
-        const url = await FileUploader(result)
-        await Application.update(
-            {result: url},
-            {where:{
-                    id,
-                    user_id
-                }
-            }
-        )
-        const completedApplication = await Application.findOne({
-            attributes:{excludes:["deleted"]},
-            where:{id}})
-        return {
-            error: false,
-            message: "Result uploaded successfully",
-            data: completedApplication
-        }
-    } catch (error) {
-        console.log(error);
-        return {
-            error: true,
-            message: "Unable to complete application at the moment" || error.message,
-            data: null
-        }
-    }
-}
+
 
 exports.searchApplicationByTrackingId = async (data) => {
     try {

@@ -2,14 +2,16 @@ const multer = require('multer')
 const path = require('path')
 
 
- module.exports = multer({
+ const upload = multer({
     storage: multer.diskStorage({}),
     fileFilter: (req, file, cb) => {
         let ext = path.extname(file.originalname)
-        if(ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png" && ext !== '.pdf') {
+        if(ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png" && ext !== '.pdf' && ext !== '.doc') {
             cb(new Error("File type npt supported"), false)
             return
         }
         cb(null, true)
     },
 })
+
+module.exports = upload

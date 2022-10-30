@@ -23,11 +23,11 @@ router.get(
     searchForACourseController
 )
 
-// router.get(
-//     '/seed',
-//     validateRequest(paginateSchema, 'query'),
-//     seedCoursesController
-// )
+router.get(
+    '/seed',
+    validateRequest(paginateSchema, 'query'),
+    seedCoursesController
+)
 
 router.get(
     '/one/:id',

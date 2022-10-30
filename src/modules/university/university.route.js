@@ -1,18 +1,29 @@
 const {Router} = require('express')
 const { authorize, authorizeMerchant } = require('../../common/middlewares/authorize')
 const validateRequest = require('../../common/middlewares/validateRequest')
+const upload = require('../../common/config/multer')
 const {
     getAllUniversitiesController,
-    viewAUniversityController
+    viewAUniversityController,
+    addAUniversityController,
 } = require('./university.controller')
 
 const {
     paginateSchema,
-    modelIdSchema
+    modelIdSchema,
+    addUniversitySchema
     
 } = require('./university.schema')
 
 const router = Router()
+
+router.post(
+    '/add',
+    upload.array('image'),
+    validateRequest(addUniversitySchema, 'body'),
+    addAUniversityController
+)
+
 
 router.get(
     '/all',

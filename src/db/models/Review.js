@@ -21,6 +21,9 @@ module.exports = (sequelize, DataTypes) =>{
         type: DataTypes.INTEGER,
         defaultValue: 3
       },
+      author: {
+        type: DataTypes.STRING
+      },
       deleted:{
         type: DataTypes.BOOLEAN,
         defaultValue: false

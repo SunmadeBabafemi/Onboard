@@ -65,6 +65,12 @@ module.exports = (sequelize, DataTypes) =>{
       class_diet: {
         type: DataTypes.STRING,
       },
+      course_name: {
+        type: DataTypes.STRING,
+      },
+      school_name: {
+        type: DataTypes.STRING,
+      },
       deleted:{
         type: DataTypes.BOOLEAN,
         defaultValue: false

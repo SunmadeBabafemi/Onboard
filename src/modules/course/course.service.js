@@ -100,7 +100,55 @@ exports.seachForCourse = async (data) => {
             && Number(foundProgram.length) < 1 
             && Number(foundUniversity.length) > 0 
         ) {
-            
+            result = foundUniversity
+        } else if(
+             Number(foundCourse.length) < 1
+            && Number(foundProgram.length) > 0
+            && Number(foundUniversity.length) < 1
+        ) {
+            for (const program of foundProgram){
+                const course = await Course.findAll({where: {ProgramId: program.id}})
+                result.push(...course)
+            }
+        } else if(
+            Number(foundCourse.length) > 0
+            && Number(foundProgram.length) < 1 
+            && Number(foundUniversity.length) > 0 
+        ){
+            for (const uni of foundUniversity){
+                for(const course of foundCourse){
+                 const courses = await Course.findOne({
+                    where:{
+                        id: course.id,
+                        UniversityId: uni.id
+                    }
+                })
+                result.push(courses)
+                }
+            }
+        } else if(
+             Number(foundCourse.length) <1
+            && Number(foundProgram.length) > 0 
+            && Number(foundUniversity.length) <1
+        ) {
+            for(const prog of foundProgram){
+                const courses = await Course.findAll({where:{ProgramId: prog.id}})
+                result.push(...courses)
+            }
+        } else if (
+            Number(foundCourse.length) <1
+            && Number(foundProgram.length) > 0 
+            && Number(foundUniversity.length) > 0
+        ) {
+            for(const uni of foundUniversity){
+                for (const prog of foundProgram){
+                    const courses = await Course.findAll({where:{
+                        ProgramId: prog.id,
+                        UniversityId: uni.id
+                    }})
+                    result.push(...courses)
+                }
+            }
         }
  
 
@@ -158,6 +206,7 @@ exports.getOneCourseById = async (data) => {
                 active: true
             }
         }) 
+        const school = await University.findOne({where:{id:singleCourse.UniversityId}})
         const program_type = await Program.findOne({where: {id: singleCourse.ProgramId}})
         const courseDetails = {
             id: singleCourse.id,
@@ -167,7 +216,7 @@ exports.getOneCourseById = async (data) => {
             duration: singleCourse.duration,
             program: program_type.name,
             available_diet: available_classes,
-            university_id: singleCourse.UniversityId
+            university_name: school.name
         }
         return {
             error: false,

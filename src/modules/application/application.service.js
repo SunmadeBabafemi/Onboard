@@ -5,6 +5,7 @@ const upload = require('express-fileupload')
 const randomString = require('../../common/helpers/randString')
 const {getPaginatedRecords, paginateRaw} = require('../../common/helpers/paginate')
 const { FileUploader } = require('../../common/helpers/cloudinaryUpload')
+const { sendMailToApplicant } = require('../email-notification/email.service')
 const {
     sequelize,
     University,
@@ -46,7 +47,7 @@ exports.createApplication = async (data) => {
             }
         }
         const intendingClass = await Class.findOne({where:{id: class_id}})
-        
+        const intendingSchool = await University.findOne({where:{id: intendingCourse.UniversityId}})
         const alreadyApplied = await Application.findOne({
             where:{
                 email,
@@ -71,17 +72,38 @@ exports.createApplication = async (data) => {
             tracking_id: 'APL'+ randomString(),
             application_fees: intendingClass.application_fees,
             class_diet: intendingClass.class_diet,
+            course_name: intendingCourse.name,
+            school_name: intendingSchool.name,
             CourseId: intendingCourse.id,
             ClassId: class_id,
             user_id,
             result: url
         })
         
+        const mailContent = {
+            first_name: application.first_name,
+            last_name: application.last_name,
+            phone_number: application.phone_number,
+            email: application.email,
+            nationality: application.nationality,
+            gender: application.gender,
+            tracking_id: application.tracking_id,
+            application_fees: application.application_fees,
+            class_diet: application.class_diet,
+            course_name: application.course_name,
+            school_name: application.school_name,
+            
+        }
+
+        const sendMail = await sendMailToApplicant(mailContent)
 
         return {
             error: false,
             message: "application initiated, proceed to neccessary payment",
-            data: application,
+            data: {
+                application,
+                mail_message: sendMail.message
+            }
         }
 
     } catch (error) {

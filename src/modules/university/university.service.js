@@ -12,64 +12,6 @@ const {
 
 } = models
 
-exports.addAUniversity = async (payload) => {
-    try {
-        const {
-           name,
-           description,
-           address,
-           country,
-           added_by, 
-           files
-        } = payload
-        const existingUni = await University.findOne({
-            where: {name, country}
-        })
-        if(existingUni){
-            return {
-                error: true,
-                message: 'A university with the same name in the same country already exists',
-                data: null
-            }
-        }
-
-        const newUni = await University.create({
-            name,
-            description,
-            address,
-            country,
-            added_by,
-        })
-        const imgUrls = []
-        for(const file of files) {
-            const {path} = file
-            const url = await ImageUploader(path)
-            imgUrls.push(url)
-        }
-         await University.update(
-            {
-                picture: imgUrls[0],
-                picture_2: imgUrls[1],
-            },
-            {where: {id: newUni.id}}
-        )
-
-    const updatedUni = await University.findOne({where:{id: newUni.id}})
-        return {
-            error: false,
-            message: "University added successfully",
-            data: updatedUni
-        }
-    } catch (error) {
-        console.log(error);
-        return {
-            error: true,
-            message: error.message || "Unable to add new university at the moment",
-            data: null
-        }
-    }
-}
-
 
 exports.getAllUniversities = async (data) => {
         try {

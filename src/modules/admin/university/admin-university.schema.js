@@ -9,6 +9,7 @@ exports.addCourseParamsSchema = Joi.object().keys({
 exports.addUniversitySchema = Joi.object().keys({
   name: Joi.string().required(),
   description: Joi.string().required(),
+  address: Joi.string().required(),
   country: Joi.string().required(),
 })
 

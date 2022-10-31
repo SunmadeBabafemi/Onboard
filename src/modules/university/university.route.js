@@ -17,13 +17,6 @@ const {
 
 const router = Router()
 
-router.post(
-    '/add',
-    upload.array('image'),
-    validateRequest(addUniversitySchema, 'body'),
-    addAUniversityController
-)
-
 
 router.get(
     '/all',

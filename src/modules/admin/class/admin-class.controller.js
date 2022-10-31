@@ -2,18 +2,23 @@ const {HTTP} = require('../../../common/constants/http')
 const {RESPONSE} = require('../../../common/constants/response')
 const createError = require("../../../common/helpers/createError");
 const { createResponse } = require("../../../common/helpers/createResponse");
-const universityService = require('./admin-university.service')
+const ClassService = require('./admin-class.service')
 
-exports.addAUniversityController = async(req, res, next) => {
+exports.addAClassController = async (req, res, next) => {
     try {
-        const {error, message, data } = await universityService.addAUniversity({
-            name: req.body.name,
-            description: req.body.description,
-            address: req.body.address,
-            country: req.body.country,
-            admin: req.user,
-            files: req.files
+        const {error, message, data} = await ClassService.addAClass({
+            class_year: req.body.class_year,
+            class_diet: req.body.class_diet,
+            start_date: req.body.start_date,
+            end_date: req.body.end_date,
+            application_fees: req.body.application_fees,
+            application_opening: req.body.application_opening,
+            application_closing: req.body.application_closing,
+            course_tuition: req.body.course_tuition,
+            course_id: req.params.id,
+            admin: req.user
         })
+
         if (error) {
         return next(
             createError(HTTP.BAD_REQUEST, [
@@ -21,7 +26,7 @@ exports.addAUniversityController = async(req, res, next) => {
                 status: RESPONSE.ERROR,
                 message,
                 statusCode:
-                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                    data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
                 data,
             },
             ])
@@ -29,15 +34,15 @@ exports.addAUniversityController = async(req, res, next) => {
         }
         return createResponse(message, data)(res, HTTP.CREATED);
     } catch (error) {
-        console.error(error);
+        console.error(err);
 
-        return next(createError.InternalServerError(error));
+        return next(createError.InternalServerError(err));
     }
 }
 
-exports.editAUniversityController = async (req, res, next) => {
+exports.editAClassController = async (req, res, next) => {
     try {
-        const {error, message, data} = await universityService.editUniversity({
+        const {error, message, data} = await ClassService.editClass({
             id: req.params.id,
             body: req.body
         })
@@ -64,9 +69,9 @@ exports.editAUniversityController = async (req, res, next) => {
 }
 
 
-exports.deleteAUniversityController = async (req, res, next) => {
+exports.deleteAClassController = async (req, res, next) => {
     try {
-        const {error, message, data} = await universityService.deleteUniversity(req.params.id)
+        const {error, message, data} = await ClassService.deleteClass(req.params.id)
 
         if (error) {
         return next(

@@ -2,41 +2,40 @@ const {Router} = require('express')
 const{authorizeSuperAdmin, authorizeAdmin} = require('../../../common/middlewares/authorize')
 const {authAdminLogin, } = require('../../../common/middlewares/authorizeLogin')
 const validateRequest = require('../../../common/middlewares/validateRequest')
-const upload = require('../../../common/config/multer')
 const { 
-    addAUniversityController,
-    editAUniversityController,
-    deleteAUniversityController
-} = require('./admin-university.controller')
+    addAClassController,
+    editAClassController,
+    deleteAClassController
+} = require('./admin-class.controller')
 const {
-    addUniversitySchema,
-    modelIdSchema,
-    editUniversitySchema
-} = require('./admin-university.schema')
+addClassBodySchema,
+modelIdSchema,
+editClassBodySchema
+} = require('./admin-class.schema')
 
 const router = Router()
 
 router.post(
-    '/create',
-    upload.array('image'),
-    validateRequest(addUniversitySchema, "body"),
+    '/:id/create',
+    validateRequest(modelIdSchema, "params"),
+    validateRequest(addClassBodySchema, "body"),
     authorizeAdmin,
-    addAUniversityController
+    addAClassController
 )
 
 router.patch(
     '/edit/:id',
     validateRequest(modelIdSchema, "params"),
-    validateRequest(editUniversitySchema, "body"),
+    validateRequest(editClassBodySchema, "body"),
     authorizeAdmin,
-    editAUniversityController
+    editAClassController
 )
 
 router.patch(
     '/delete/:id',
     validateRequest(modelIdSchema, "params"),
     authorizeAdmin,
-    deleteAUniversityController
+    deleteAClassController
 )
 
 module.exports = router

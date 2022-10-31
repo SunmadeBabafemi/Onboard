@@ -3,6 +3,7 @@ var Sequelize = require('sequelize')
 const {Op} = Sequelize
 const {getPaginatedRecords, paginateRaw} = require('../../../common/helpers/paginate')
 const {courses} = require('../../../db/seeders/courses')
+const { ImageUploader } = require('../../../common/helpers/cloudinaryUpload')
 const {
     sequelize,
     University,
@@ -12,50 +13,64 @@ const {
 
 } = models
 
-exports.addAUniversity = async (data) => {
+exports.addAUniversity = async (payload) => {
     try {
         const {
-            admin_email,
-            country,
-            name,
-            description,
-        } = data
-
-        const existingUniversity = await University.findOne({where:{
-            name,
-            country,
-            deleted: false
-        }})
-
-        if(existingUniversity){
+           name,
+           description,
+           address,
+           country,
+           admin , 
+           files
+        } = payload
+        const existingUni = await University.findOne({
+            where: {name, country}
+        })
+        if(existingUni){
             return {
                 error: true,
-                message: "A University with the same name already created",
+                message: 'A university with the same name in the same country already exists',
                 data: null
             }
         }
 
-        const newUniversity = await University.create({
+        const newUni = await University.create({
             name,
             description,
+            address,
             country,
-            added_by: admin_email,
+            added_by: admin.email,
         })
+        const imgUrls = []
+        for(const file of files) {
+            const {path} = file
+            const url = await ImageUploader(path)
+            imgUrls.push(url)
+        }
+         await University.update(
+            {
+                picture: imgUrls[0],
+                picture_2: imgUrls[1],
+                picture_3: imgUrls[2],
+                picture_4: imgUrls[3]
+            },
+            {where: {id: newUni.id}}
+        )
 
+    const updatedUni = await University.findOne({where:{id: newUni.id}})
         return {
             error: false,
-            message: "University created successfully",
-            data: newUniversity
+            message: "University added successfully",
+            data: updatedUni
         }
     } catch (error) {
         console.log(error);
         return {
             error: true,
-            message: error.message || "Unable to create university at the moment",
+            message: error.message || "Unable to add new university at the moment",
             data: null
         }
     }
-   
 }
 
 exports.editUniversity = async (data) => {

@@ -470,6 +470,10 @@
                     "field": "rating",
                     "seqType": "Sequelize.INTEGER"
                 },
+                "author": {
+                    "field": "author",
+                    "seqType": "Sequelize.STRING"
+                },
                 "deleted": {
                     "defaultValue": {
                         "value": false
@@ -644,5 +648,5 @@
             "indexes": []
         }
     },
-    "revision": 11
+    "revision": 12
 }

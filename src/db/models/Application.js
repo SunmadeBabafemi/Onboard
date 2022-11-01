@@ -62,6 +62,9 @@ module.exports = (sequelize, DataTypes) =>{
       user_id: {
         type: DataTypes.STRING,
       },
+      class_year: {
+        type: DataTypes.INTEGER
+      },
       class_diet: {
         type: DataTypes.STRING,
       },

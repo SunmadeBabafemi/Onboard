@@ -3,7 +3,8 @@ const { authorize, authorizeMerchant } = require('../../common/middlewares/autho
 const validateRequest = require('../../common/middlewares/validateRequest')
 const {
     seedClassesController,
-    getallClassesController
+    getallClassesController,
+    viewAClassController
 } = require('./class.controller')
 
 const {
@@ -14,12 +15,12 @@ const {
 
 const router = Router()
 
-// router.post(
-//     '/search',
-//     validateRequest(paginateSchema, 'query'),
-//     // validateRequest(searchCourseSchema, 'body'),
-//     searchForACourseController
-// )
+
+router.get(
+    '/view/:id',
+    validateRequest(modelIdSchema, 'params'),
+    viewAClassController
+)
 
 router.get(
     '/seed',

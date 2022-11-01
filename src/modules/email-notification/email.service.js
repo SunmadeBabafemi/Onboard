@@ -73,6 +73,7 @@ exports.sendMailToApplicant = async (data) =>{
            tracking_id,
            application_fees,
            class_diet,
+           class_year,
            course_name,
            school_name
         } = data
@@ -83,17 +84,18 @@ exports.sendMailToApplicant = async (data) =>{
         html: `
             <h2>Hello ${first_name},</h2> 
             <h3>Find below the details of application</h3>
-            <h4>FIRST NAME: ${first_name}</h4>
-            <h4>LAST NAME: ${last_name}</h4>
-            <h4>PHONE NUMBER: ${phone_number}</h4>
-            <h4>EMAIL: ${email}</h4>
-            <h4>NATIONALITY: ${nationality}</h4>
-            <h4>GENDER: ${gender}</h4>
-            <h4>TRACKING ID: ${tracking_id}</h4>
-            <h4>APPLICATION FEES: ${application_fees}</h4>
-            <h4>CLASS DIET: ${class_diet}</h4>
-            <h4>COURSE NAME: ${course_name}</h4>
-            <h4>SCHOOL NAME: ${school_name}</h4>
+            <h5>FIRST NAME: ${first_name}</h5>
+            <h5>LAST NAME: ${last_name}</h5>
+            <h5>PHONE NUMBER: ${phone_number}</h5>
+            <h5>EMAIL: ${email}</h5>
+            <h5>NATIONALITY: ${nationality}</h5>
+            <h5>GENDER: ${gender}</h5>
+            <h5>TRACKING ID: ${tracking_id}</h5>
+            <h5>APPLICATION FEES: ${application_fees}</h5>
+            <h5>CLASS DIET: ${class_diet}</h5>
+            <h5>CLASS YEAR: ${class_year}</h5>
+            <h5>COURSE NAME: ${course_name}</h5>
+            <h5>SCHOOL NAME: ${school_name}</h5>
         `
         }
         let transporter =  nodemailer.createTransport({

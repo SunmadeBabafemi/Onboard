@@ -19,7 +19,7 @@ exports.createApplicationController = async (req, res, next) => {
             user_id: req.userId,
             result: req.file
         })
-
+        // console.log("files>>>>>>>>>>>", req.file);
         if (error) {
         return next(
             createError(HTTP.BAD_REQUEST, [

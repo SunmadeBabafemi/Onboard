@@ -1,7 +1,6 @@
 const models = require('../../db/models')
 var Sequelize = require('sequelize')
 const {Op} = Sequelize
-const upload = require('express-fileupload')
 const randomString = require('../../common/helpers/randString')
 const {getPaginatedRecords, paginateRaw} = require('../../common/helpers/paginate')
 const { FileUploader } = require('../../common/helpers/cloudinaryUpload')
@@ -71,6 +70,7 @@ exports.createApplication = async (data) => {
             gender,
             tracking_id: 'APL'+ randomString(),
             application_fees: intendingClass.application_fees,
+            class_year: intendingClass.class_year,
             class_diet: intendingClass.class_diet,
             course_name: intendingCourse.name,
             school_name: intendingSchool.name,
@@ -90,6 +90,7 @@ exports.createApplication = async (data) => {
             tracking_id: application.tracking_id,
             application_fees: application.application_fees,
             class_diet: application.class_diet,
+            class_year: application.class_year,
             course_name: application.course_name,
             school_name: application.school_name,
             
@@ -210,7 +211,8 @@ exports.viewApplication = async (data) => {
             tuition: intending_class.course_tuition,
             application_fees: intending_class.application_fees,
             tracking_id: foundApplication.tracking_id,
-            class_diet: foundApplication.class_diet
+            class_diet: foundApplication.class_diet,
+            school_name: foundApplication.school_name
             
         }
         return {

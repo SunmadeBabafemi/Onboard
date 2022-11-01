@@ -19,7 +19,7 @@ const router = Router()
 router.post(
     '/create',
     upload.array('image'),
-    validateRequest(addUniversitySchema, "body"),
+    // validateRequest(addUniversitySchema, "body"),
     authorizeAdmin,
     addAUniversityController
 )

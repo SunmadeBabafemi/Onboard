@@ -136,6 +136,10 @@
                     "field": "user_id",
                     "seqType": "Sequelize.STRING"
                 },
+                "class_year": {
+                    "field": "class_year",
+                    "seqType": "Sequelize.INTEGER"
+                },
                 "class_diet": {
                     "field": "class_diet",
                     "seqType": "Sequelize.STRING"
@@ -656,5 +660,5 @@
             "indexes": []
         }
     },
-    "revision": 13
+    "revision": 14
 }

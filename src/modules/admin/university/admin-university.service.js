@@ -26,6 +26,7 @@ exports.addAUniversity = async (payload) => {
         const existingUni = await University.findOne({
             where: {name, country}
         })
+        console.log(existingUni);
         if(existingUni){
             return {
                 error: true,

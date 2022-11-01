@@ -1,13 +1,45 @@
-const {HTTP} = require('../../common/constants/http')
-const {RESPONSE} = require('../../common/constants/response')
-const createError = require("../../common/helpers/createError");
-const { createResponse } = require("../../common/helpers/createResponse");
-const ClassService = require('./class.service')
+const {HTTP} = require('../../../common/constants/http')
+const {RESPONSE} = require('../../../common/constants/response')
+const createError = require("../../../common/helpers/createError");
+const { createResponse } = require("../../../common/helpers/createResponse");
+const ApplicationService = require('./admin-application.service')
 
-
-exports.viewAClassController = async (req, res, next) => {
+exports.getAllApplicationsController = async(req, res, next) => {
     try {
-        const {error, message, data} = await ClassService.viewClass(req.params.id)
+        const {error, message, data } = await ApplicationService.viewAllApplications({
+            limit: req.query.limit,
+            page: req.query.page
+        })
+        const allData = {
+            allApplications: data.applications,
+            pagination: data.pagination
+        }
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, allData)(res, HTTP.CREATED);
+    } catch (error) {
+        console.error(error);
+
+        return next(createError.InternalServerError(error));
+    }
+}
+
+exports.searchApplicationController = async (req, res, next) => {
+    try {
+        const {error, message, data} = await ApplicationService.searchApplicationByTrackingId({
+            tracking_id: req.query.tracking_id
+        })
 
         if (error) {
         return next(
@@ -30,17 +62,11 @@ exports.viewAClassController = async (req, res, next) => {
     }
 }
 
-
-exports.seedClassesController = async (req, res, next) => {
+exports.viewApplicationController = async (req, res, next) => {
     try {
-        const {error, message, data} = await ClassService.seedClass({
-            limit: req.query.limit,
-            page: req.query.page
+        const {error, message, data} = await ApplicationService.viewApplication({
+            id: req.params.id,
         })
-        const allData = {
-            pagination: data.pagination,
-            courses: data.foundResults
-        }
 
         if (error) {
         return next(
@@ -55,40 +81,7 @@ exports.seedClassesController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.CREATED);
-    } catch (error) {
-        console.error(error);
-
-        return next(createError.InternalServerError(error));
-    }
-}
-
-
-exports.getallClassesController = async (req, res, next) => {
-    try {
-        const {error, message, data} = await ClassService.getallClasses({
-            limit: req.query.limit,
-            page: req.query.page
-        })
-        const allData = {
-            pagination: data.pagination,
-            courses: data.allClasses
-        }
-
-        if (error) {
-        return next(
-            createError(HTTP.BAD_REQUEST, [
-            {
-                status: RESPONSE.ERROR,
-                message,
-                statusCode:
-                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
-                data,
-            },
-            ])
-        );
-        }
-        return createResponse(message, allData)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.CREATED);
     } catch (error) {
         console.error(error);
 

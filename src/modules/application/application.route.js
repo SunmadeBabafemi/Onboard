@@ -25,7 +25,7 @@ router.post(
     authorize(),
     upload.single('result'),
     validateRequest(applicationIdSchema, 'params'),
-    validateRequest(createApplicationSchema, 'body'),
+    // validateRequest(createApplicationSchema, 'body'),
     createApplicationController
 )
 

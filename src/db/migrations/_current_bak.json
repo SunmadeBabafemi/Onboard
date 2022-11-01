@@ -140,6 +140,14 @@
                     "field": "class_diet",
                     "seqType": "Sequelize.STRING"
                 },
+                "course_name": {
+                    "field": "course_name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "school_name": {
+                    "field": "school_name",
+                    "seqType": "Sequelize.STRING"
+                },
                 "deleted": {
                     "defaultValue": {
                         "value": false
@@ -648,5 +656,5 @@
             "indexes": []
         }
     },
-    "revision": 12
+    "revision": 13
 }

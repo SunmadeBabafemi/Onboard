@@ -94,7 +94,7 @@ exports.completeSignup = async (otp) => {
 
         await OneTimePassword.destroy({where: {otp}})
         const verfiedUser = await User.findOne({
-            attributes:{excludes:['deleted']},
+            attributes:['id', 'full_name', 'email', 'phone_number', 'profile_picture', 'isVerified', 'created_at', 'updated_at'],
             where:{id}
         })
 

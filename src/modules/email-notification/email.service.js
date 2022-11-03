@@ -17,12 +17,12 @@ const {
 exports.sendOTPtoMail = async (data) =>{
     try {
         const{email, mailSubject, fullName, otp} = data
-        const firstName = fullName.split(' ')[1]
+        const name = email.split('@ ')[0]
         const message = {
             from: KEYS.mailSender,
             to: email,
             subject: mailSubject,
-            html: `<h1>Hello ${firstName}, here's your otp:</h1> <h2>${otp}</h2>`
+            html: `<h1>Hello ${name}, here's your otp:</h1> <h2>${otp}</h2>`
 
         }
         let transporter =  nodemailer.createTransport({

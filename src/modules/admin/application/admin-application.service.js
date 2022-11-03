@@ -24,10 +24,10 @@ exports.viewAllApplications = async (data) => {
         
         if(Number(allApplications.length) < 1){
             return {
-                error: true,
+                error: false,
                 message: 'No applications found',
                 data: {
-                    application: null,
+                    applications: [],
                     pagination: null
                 }
             }

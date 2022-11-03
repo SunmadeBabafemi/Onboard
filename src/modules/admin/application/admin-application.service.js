@@ -17,31 +17,39 @@ const {
 exports.viewAllApplications = async (data) => {
     try {
         const {limit, page} = data
+        let paginatedResult
         const allApplications = await Application.findAll({
             attributes:{excludes:['deleted']}
         })
-        if(allApplications.length < 1){
+        
+        if(Number(allApplications.length) < 1){
             return {
                 error: true,
                 message: 'No applications found',
-                data: null
+                data: {
+                    application: null,
+                    pagination: null
+                }
+            }
+        } else{
+             paginatedResult = await paginateRaw(
+                allApplications,
+                {
+                    limit: Number(limit),
+                    page: Number(page)
+                }
+            )
+            return {
+                error: false,
+                message: "All Applications retrieved successfully",
+                data: {
+                    applications: paginatedResult.data,
+                    pagination: paginatedResult.perPage
+                }
             }
         }
-        const paginatedResult = await paginateRaw(
-            allApplications,
-            {
-                limit: Number(limit),
-                page: Number(page)
-            }
-        )
-        return {
-            error: false,
-            message: "All Applications retrieved successfully",
-            data: {
-                applications: paginatedResult.data,
-                pagination: paginatedResult.perPage
-            }
-        }
+ 
+        
     } catch (error) {
         console.log(error);
         return {

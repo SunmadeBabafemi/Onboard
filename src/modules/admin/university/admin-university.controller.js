@@ -39,7 +39,8 @@ exports.editAUniversityController = async (req, res, next) => {
     try {
         const {error, message, data} = await universityService.editUniversity({
             id: req.params.id,
-            body: req.body
+            body: req.body,
+            files: req.files
         })
 
         if (error) {

@@ -26,6 +26,7 @@ router.post(
 
 router.patch(
     '/edit/:id',
+    upload.array('image'),
     validateRequest(modelIdSchema, "params"),
     validateRequest(editUniversitySchema, "body"),
     authorizeAdmin,

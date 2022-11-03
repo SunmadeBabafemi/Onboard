@@ -76,7 +76,7 @@ exports.addAUniversity = async (payload) => {
 
 exports.editUniversity = async (data) => {
     try {
-        const {id, body } = data
+        const {id, body, files } = data
         const singleUniversity = await University.findOne({where:{
             id,
             deleted: false
@@ -88,6 +88,64 @@ exports.editUniversity = async (data) => {
                 data: null
             } 
         }
+        const imgUrls = []
+        // console.log(files);
+        if (files.length = 4){
+            for(const file of files) {
+                const {path} = file
+                const url = await ImageUploader(path)
+                imgUrls.push(url)
+            }
+            await University.update(
+                {
+                    picture: imgUrls[0],
+                    picture_2: imgUrls[1],
+                    picture_3: imgUrls[2],
+                    picture_4: imgUrls[3]
+                },
+                {where: {id: singleUniversity.id}}
+            )
+        }else if (files.length = 3){
+            for(const file of files) {
+                const {path} = file
+                const url = await ImageUploader(path)
+                imgUrls.push(url)
+            }
+            await University.update(
+                {
+                    picture: imgUrls[0],
+                    picture_2: imgUrls[1],
+                    picture_3: imgUrls[2],
+                },
+                {where: {id: singleUniversity.id}}
+            )
+        } else if (files.length = 2){
+            for(const file of files) {
+                const {path} = file
+                const url = await ImageUploader(path)
+                imgUrls.push(url)
+            }
+            await University.update(
+                {
+                    picture: imgUrls[0],
+                    picture_2: imgUrls[1],
+                },
+                {where: {id: singleUniversity.id}}
+            )
+        } else if (files.length = 1){
+            for(const file of files) {
+                const {path} = file
+                const url = await ImageUploader(path)
+                imgUrls.push(url)
+            }
+            await University.update(
+                {
+                    picture: imgUrls[0],
+                },
+                {where: {id: singleUniversity.id}}
+            )
+        } 
+
         await University.update(
             {
             ...body
@@ -96,7 +154,7 @@ exports.editUniversity = async (data) => {
                 id: singleUniversity.id,
             }}
         )
-
+        
         const editedUniversity = await University.findOne({where:{id: singleUniversity.id}})
         return {
             error: false,

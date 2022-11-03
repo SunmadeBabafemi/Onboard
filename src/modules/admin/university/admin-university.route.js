@@ -6,15 +6,34 @@ const upload = require('../../../common/config/multer')
 const { 
     addAUniversityController,
     editAUniversityController,
-    deleteAUniversityController
+    deleteAUniversityController,
+    getAllUniversitiesController,
+    viewAUniversityController
 } = require('./admin-university.controller')
 const {
     addUniversitySchema,
     modelIdSchema,
-    editUniversitySchema
+    editUniversitySchema,
+    paginateSchema
 } = require('./admin-university.schema')
 
 const router = Router()
+
+router.get(
+    '/all',
+    validateRequest(paginateSchema, 'query'),
+    authorizeAdmin,
+    getAllUniversitiesController
+)
+
+router.get(
+    '/view/:id',
+    validateRequest(paginateSchema, 'query'),
+    validateRequest(modelIdSchema, 'params'),
+    authorizeAdmin,
+    viewAUniversityController
+
+)
 
 router.post(
     '/create',

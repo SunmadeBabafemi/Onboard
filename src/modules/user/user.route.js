@@ -8,15 +8,19 @@ const {
  logoutUserController,
  completeSignupController,
  forgotPasswordController,
- resetPasswordController
+ resetPasswordController,
+ googleUserAuthController,
+ editUserProfileController
 } = require('./user.controller')
 const {
  registerUserSchema,
  loginUserSchema,
  forgotPasswordSchema,
  resetPasswordSchema,
- verifyUserSchema
+ verifyUserSchema,
+ editUserProfileSchema
 } = require('./user.schema')
+const upload = require('../../common/config/multer')
 
 const router = Router()
 
@@ -24,6 +28,11 @@ router.post(
     '/signup',
     validateRequest(registerUserSchema, "body"),
     registerUserController
+)
+
+router.get(
+    '/google/url',
+    googleUserAuthController
 )
 
 router.post(
@@ -40,8 +49,16 @@ router.post(
 )
 router.get(
     '/logout',
-    authorize,
+    authorize(),
     logoutUserController
+)
+
+router.patch(
+    '/edit',
+    upload.single('image'),
+    authorize(),
+    validateRequest(editUserProfileSchema, "body"),
+    editUserProfileController
 )
 
 // router.post(

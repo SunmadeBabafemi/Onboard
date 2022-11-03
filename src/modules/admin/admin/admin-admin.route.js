@@ -21,7 +21,7 @@ const router = Router()
 router.post(
     '/create',
     validateRequest(registerAdminSchema, "body"),
-    authorizeSuperAdmin,
+    // authorizeSuperAdmin,
     registerAdminController
 )
 router.post(

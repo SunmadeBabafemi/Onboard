@@ -1,7 +1,9 @@
 const models = require('../../db/models')
 var Sequelize = require('sequelize')
+const ggOAuth = require('../../common/helpers/googleAuth')
 const {hashPassword, comparePassword, forgotPassword, resetPassword, completeSignup} = require('../../common/helpers/password')
 const {jwtSign, jwtVerify, jwtDecode} = require('../../common/helpers/token')
+const { ImageUploader } = require('../../common/helpers/cloudinaryUpload')
 const {
     sequelize,
     User,
@@ -52,6 +54,25 @@ exports.registerUser = async (data) =>{
             data: null
         }
         
+    }
+}
+
+exports.getGoogleAuth = async () => {
+    try {
+        const ggAuth = await ggOAuth
+        const url = ggAuth.data
+        return {
+            error: false,
+            message:'successfully retrieved',
+            data: url
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: 'Unable to perform action at the moment'||error.message,
+            data: null
+        }
     }
 }
 
@@ -169,6 +190,59 @@ exports.logoutUser = async(token) => {
     }
 }
 
+exports.editUserProfile = async (data) => {
+    try {
+        const{
+            user_id,
+            body,
+            file
+        } = data
+        const existingUser = await User.findOne({where:{id:user_id}})
+        if(!existingUser){
+            return {
+                error: true,
+                message: "User not found",
+                data: null
+            }
+        }
+        if (file){
+            const {path} = file
+            const url = await ImageUploader(path)
+            await User.update(
+                {
+                    ...body,
+                    profile_picture: url
+                },
+                {where:{id:user_id}}
+            ) 
+        } 
+        await User.update(
+            {
+                ...body,
+            },
+            {where:{id:user_id}}
+        )
+
+        const updatedUser = await User.findOne({
+            attributes:{excludes:['password']},
+            where:{id:user_id}
+        })
+        return {
+            error: false,
+            message:"User's profile updated successfully",
+            data: updatedUser
+        }
+
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message:"Unable to update user's profile at the moment",
+            data: null
+        }
+    }
+}
+
 // exports.forgotPassword = async(body) => {
 //     try {
 //         const {email} = body
@@ -180,7 +254,7 @@ exports.logoutUser = async(token) => {
 //         }
 
 //     } catch (error) {
-//         console.log(error)
+//         console.log(error)error
 //         return{
 //             error: true,
 //             message: error.message|| "Unable to send email at the moment",

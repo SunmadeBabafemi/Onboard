@@ -17,6 +17,8 @@ const KEYS = {
   cloudinaryApiSecret:process.env.CLOUDINARY_API_SECRET  ,
   cloudinaryApiKey:process.env.CLOUDINARY_API_KEY,
   cloudinaryUrl: process.env.CLOUDINARY_URL,
+  googleClientId: process.env.GOOGLE_CLIENT_ID,
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
   mailHost: process.env.MAIL_HOST,
   mailPort: process.env.MAIL_PORT,
   mailAuthUser: process.env.MAIL_AUTH_USER,

@@ -25,7 +25,7 @@ module.exports = () => {
   router.use('/course', courses)
   router.use('/application', application)
   router.use('/class', course_class)
-  router.use("/user", users);
+  router.use("/auth", users);
   router.use('/review', reviews)
 
   // admin routes

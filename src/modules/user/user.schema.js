@@ -2,9 +2,14 @@ const Joi = require('joi').extend(require('@joi/date'))
 Joi.objectId = require("joi-objectid")(Joi);
 
 exports.registerUserSchema = Joi.object().keys({
-    full_name: Joi.string().required(),
     email: Joi.string().required(),
     password: Joi.string().required()
+})
+
+exports.editUserProfileSchema = Joi.object().keys({
+    email: Joi.string().optional(),
+    full_name: Joi.string().optional(),
+    phone_number: Joi.string().optional()
 })
 
 exports.verifyUserSchema = Joi.object().keys({

@@ -27,6 +27,9 @@ module.exports = (sequelize, DataTypes) =>{
       password: {
         type: DataTypes.STRING,
       },
+      profile_picture: {
+        type: DataTypes.STRING,
+      },
       isBlocked: {
         type: DataTypes.BOOLEAN,
         defaultValue: false

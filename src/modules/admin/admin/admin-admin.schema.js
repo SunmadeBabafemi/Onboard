@@ -2,7 +2,6 @@ const Joi = require('joi').extend(require('@joi/date'))
 Joi.objectId = require("joi-objectid")(Joi);
 
 exports.registerAdminSchema = Joi.object().keys({
-    fullName: Joi.string().required(),
     email: Joi.string().required(),
     password: Joi.string().required(),
     role: Joi.string().trim().valid("super", "admin").optional(),

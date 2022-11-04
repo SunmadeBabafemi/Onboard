@@ -15,3 +15,10 @@ exports.addCourseBodySchema = Joi.object().keys({
 exports.modelIdSchema = Joi.object({
   id: Joi.string().required(),
 })
+
+
+exports.paginateSchema = Joi.object().keys({
+  limit: Joi.number().positive().required(),
+  page: Joi.number().positive().required(),
+
+})

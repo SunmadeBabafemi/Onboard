@@ -43,7 +43,7 @@ exports.viewAllApplications = async (data) => {
                 error: false,
                 message: "All Applications retrieved successfully",
                 data: {
-                    applications: paginatedResult.data,
+                    applications: paginatedResult,
                     pagination: paginatedResult.perPage
                 }
             }
@@ -72,9 +72,9 @@ exports.searchApplicationByTrackingId = async (data) => {
           })
         if(Number(foundApplication.length) < 1) {
             return {
-                error: true,
+                error: null,
                 message: "No application found with that tracking ID",
-                data: null
+                data: []
             }
         }
 

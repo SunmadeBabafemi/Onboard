@@ -159,9 +159,12 @@ exports.seachForCourse = async (data) => {
         })
         if (Number(paginatedResult.data.length) < 1){
             return {
-                error: true,
+                error: false,
                 message: "No result found based on your search filter",
-                data: null
+                data: {
+                    foundResults: [],
+                    pagination: null
+                }
             }
         } else{
             return {

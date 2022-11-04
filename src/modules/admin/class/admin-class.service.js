@@ -142,3 +142,74 @@ exports.deleteClass = async (id) => {
         
     }
 }
+
+exports.viewAClass = async (class_id) => {
+    try {
+        const viewClass = await Class.findOne({where:{id:class_id}})
+        if(!viewClass){
+            return {
+                error: true,
+                message: "Class not found",
+                data: null
+            }
+        }
+
+        return {
+            error: false,
+            message:"Class retrieved successfully",
+            data: viewClass
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: error.message || "Unable to view class at the moment",
+            data: null
+        }
+    }
+}
+
+exports.getAllClassesOfACourse = async (payload) => {
+    try {
+        const {limit, page, course_id} = payload
+        let paginatedResult
+        const allClasses = await Class.findAll({
+            where:{CourseId: course_id}
+        })
+
+
+        if(Number(allClasses.length) < 1) {
+            return {
+                error: false,
+                message: "No classes available for this course",
+                data: {
+                    classes: [],
+                    pagination: null
+                }
+            }
+        } else {
+            paginatedResult = await paginateRaw(
+                allClasses,
+                {
+                    limit: Number(limit),
+                    page: Number(page)
+                }
+            )
+            return {
+                error: false,
+                message: "Classes retrieved successfully",
+                data: {
+                    classes: paginatedResult,
+                    pagination: paginatedResult.perPage
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: error.message || "Unable to retrieve classes at the moment",
+            data: null
+        }
+    }
+}

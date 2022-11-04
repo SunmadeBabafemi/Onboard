@@ -4,6 +4,64 @@ const createError = require("../../../common/helpers/createError");
 const { createResponse } = require("../../../common/helpers/createResponse");
 const courseService = require('./admin-course.service')
 
+exports.getAllCoursesInAUniversityController = async(req, res, next) => {
+    try {
+        const {error, message, data } = await courseService.getAllCoursesInAUniversity({
+            limit: req.query.limit,
+            page: req.query.page,
+            university_id: req.params.id
+        })
+        const allData = {
+            allCourses: data.courses,
+            pagination: data.pagination
+        }
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, allData)(res, HTTP.CREATED);
+    } catch (error) {
+        console.error(error);
+
+        return next(createError.InternalServerError(error));
+    }
+}
+
+exports.viewOneCourseByIdController = async (req, res, next) => {
+    try {
+        const {error, message, data} = await courseService.viewOneCourseById({
+            id: req.params.id
+        })
+          if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, data)(res, HTTP.CREATED);
+    } catch (error) {
+        console.error(error);
+
+        return next(createError.InternalServerError(error));
+    }
+}
+
 exports.addACourseController = async (req, res, next) => {
     try {
         const {error, message, data} = await courseService.addACourse({

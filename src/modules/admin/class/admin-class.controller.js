@@ -93,3 +93,61 @@ exports.deleteAClassController = async (req, res, next) => {
         return next(createError.InternalServerError(err));
     }
 }
+
+
+exports.viewAClassController = async (req, res, next) => {
+    try {
+        const {error, message, data} = await ClassService.viewAClass(req.params.id)
+
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                    data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, data)(res, HTTP.CREATED);
+    } catch (err) {
+        console.error(err);
+
+        return next(createError.InternalServerError(err));
+    }
+}
+
+exports.getAllClassesOfAcourseController = async (req, res, next) => {
+    try {
+        const {error, message, data} = await ClassService.getAllClassesOfACourse({
+           limit: req.query.limit,
+           page: req.query.page,
+           course_id: req.params.id 
+        })
+        const allData = {
+            allClasses: data.classes,
+            pagination: data.pagination
+        }
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                    data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, allData)(res, HTTP.CREATED);
+    } catch (err) {
+        console.error(err);
+
+        return next(createError.InternalServerError(err));
+    }
+}

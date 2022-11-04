@@ -5,12 +5,15 @@ const validateRequest = require('../../../common/middlewares/validateRequest')
 const { 
     addAClassController,
     editAClassController,
-    deleteAClassController
+    deleteAClassController,
+    viewAClassController,
+    getAllClassesOfAcourseController
 } = require('./admin-class.controller')
 const {
 addClassBodySchema,
 modelIdSchema,
-editClassBodySchema
+editClassBodySchema,
+paginateSchema
 } = require('./admin-class.schema')
 
 const router = Router()
@@ -36,6 +39,21 @@ router.patch(
     validateRequest(modelIdSchema, "params"),
     authorizeAdmin,
     deleteAClassController
+)
+
+router.get(
+    '/view/:id',
+    validateRequest(modelIdSchema, "params"),
+    authorizeAdmin,
+    viewAClassController
+)
+
+router.get(
+    '/all-of-course/:id',
+    validateRequest(modelIdSchema, "params"),
+    validateRequest(paginateSchema, "query"),
+    authorizeAdmin,
+    getAllClassesOfAcourseController
 )
 
 module.exports = router

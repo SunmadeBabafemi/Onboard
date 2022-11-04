@@ -5,15 +5,32 @@ const validateRequest = require('../../../common/middlewares/validateRequest')
 const { 
     addACourseController,
     editACourseController,
-    deleteACourseController
+    deleteACourseController,
+    getAllCoursesInAUniversityController,
+    viewOneCourseByIdController
 } = require('./admin-course.controller')
 const {
 addCourseBodySchema,
 addCourseParamsSchema,
-modelIdSchema
+modelIdSchema,
+paginateSchema
 } = require('./admin-course.schema')
 
 const router = Router()
+
+router.get(
+    '/in-university/:id',
+    validateRequest(modelIdSchema, 'params'),
+    validateRequest(paginateSchema, 'query'),
+    getAllCoursesInAUniversityController
+)
+
+router.get(
+    '/view/:id',
+    validateRequest(modelIdSchema, "params"),
+    authorizeAdmin,
+    viewOneCourseByIdController
+)
 
 router.post(
     '/create/:uni_id/:pg_id',

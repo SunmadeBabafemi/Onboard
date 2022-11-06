@@ -94,9 +94,10 @@ exports.searchUniversity = async (data) => {
         const{
             search
         } = data
+        const lower = search.toLowerCase()
         const universities = await University.findAll({
             attributes:{excludes:['deleted']},
-            where:{name: {[Op.like]: `%${search}%` }}
+            where:{name: {[Op.like]: `%${lower}%` }}
         })
         if(universities.length < 1){
             return {

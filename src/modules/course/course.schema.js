@@ -7,7 +7,7 @@ exports.paginateSchema = Joi.object({
   limit: Joi.number().positive().optional(),
 });
 
-exports.searchCourseSchema = Joi.object({
+exports.bigSearchCourseSchema = Joi.object({
   page: Joi.number().positive().optional(),
   limit: Joi.number().positive().optional(),
   school_name: Joi.string().optional(),
@@ -20,4 +20,10 @@ exports.searchCourseSchema = Joi.object({
 
 exports.modelIdSchema = Joi.object({
   id: Joi.string().required(),
+})
+
+exports.searchCourseSchema = Joi.object({
+  search: Joi.string().required(),
+  
+
 })

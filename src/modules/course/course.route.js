@@ -8,7 +8,8 @@ const {
     getCoursesInAUniversityController,
     editAllCoursesController,
     editAllProgramsController,
-    bigSearchForACourseController
+    bigSearchForACourseController,
+    searchForACourseUnderAUniversityController
 } = require('./course.controller')
 
 const {
@@ -20,9 +21,16 @@ const {
 const router = Router()
 
 router.get(
-    '/search',
+    '/big-search',
     // validateRequest(searchCourseSchema, 'query'),
     bigSearchForACourseController
+)
+
+router.get(
+    '/search/:id',
+    validateRequest(searchCourseSchema, 'query'),
+    validateRequest(modelIdSchema, 'params'),
+    searchForACourseUnderAUniversityController
 )
 
 router.get(

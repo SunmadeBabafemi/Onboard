@@ -354,6 +354,39 @@ exports.bigSeachForCourse = async (data) => {
 }
 
 
+exports.searchCourseUnderAUniversity = async (data) => {
+    try {
+        const {search, university_id} = data
+
+        const foundCourses = await Course.findAll({
+            where:{
+                name:{[Op.like]: `%${search}%`},
+                UniversityId: university_id
+            }
+        })
+        if (foundCourses.length < 1){
+            return {
+                error: false,
+                message: "No results found",
+                data: []
+            }
+        }
+
+        return {
+            error: false,
+            message: "Courses retrieved successfully",
+            data: foundCourses
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: error.message || "Unable to retrieve courses at the moment",
+            data: null
+        }
+    }
+}
+
 exports.getOneCourseById = async (data) => {
     try {
         const currentDate = new Date

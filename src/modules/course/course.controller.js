@@ -76,6 +76,36 @@ exports.bigSearchForACourseController = async (req, res, next) => {
 }
 
 
+exports.searchForACourseUnderAUniversityController = async (req, res, next) => {
+    try {
+        const {error, message, data} = await CourseService.searchCourseUnderAUniversity({
+            university_id: req.params.id,
+            search: req.query.search
+        })
+       
+
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, data)(res, HTTP.CREATED);
+    } catch (error) {
+        console.error(error);
+
+        return next(createError.InternalServerError(error));
+    }
+}
+
+
 exports.seedCoursesController = async (req, res, next) => {
     try {
         const {error, message, data} = await CourseService.seedCourses({

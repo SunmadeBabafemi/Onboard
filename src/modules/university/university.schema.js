@@ -17,3 +17,7 @@ exports.addUniversitySchema = Joi.object({
   address: Joi.string().required(),
   country: Joi.string().required(),
 })
+
+exports.searchSchema = Joi.object({
+  search: Joi.string().required(),
+})

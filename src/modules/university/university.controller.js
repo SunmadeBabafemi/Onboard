@@ -73,4 +73,30 @@ exports.viewAUniversityController = async (req, res, next) => {
     }
 }
 
+exports.searchUniversityController = async (req, res, next) => {
+    try {
+        const {error, message, data} = await UniversityService.searchUniversity({
+            search: req.query.search
+        })
+
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, data)(res, HTTP.CREATED);
+    } catch (error) {
+        console.error(error);
+
+        return next(createError.InternalServerError(error));
+    }
+}
 

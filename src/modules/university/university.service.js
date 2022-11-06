@@ -1,5 +1,6 @@
 const models = require('../../db/models')
 var Sequelize = require('sequelize')
+const {Op} = Sequelize
 const {getPaginatedRecords, paginateRaw} = require('../../common/helpers/paginate')
 const { ImageUploader } = require('../../common/helpers/cloudinaryUpload')
 
@@ -82,6 +83,39 @@ exports.viewUniversity = async (data) => {
         return{
             error: true,
             message: error.message|| "Unable to view UNiversity at the moment",
+            data: null
+        }
+        
+    }
+}
+
+exports.searchUniversity = async (data) => {
+    try {
+        const{
+            search
+        } = data
+        const universities = await University.findAll({
+            attributes:{excludes:['deleted']},
+            where:{name: {[Op.like]: `%${search}%` }}
+        })
+        if(universities.length < 1){
+            return {
+                error: false,
+                message: "University Not Found",
+                data: []
+            }
+        }
+
+        return {
+            error: false,
+            message: "University retrieved successfully",
+            data: universities
+        }
+    } catch (error) {
+       console.log(error)
+        return{
+            error: true,
+            message: error.message|| "Unable to fetch univerisites at the moment",
             data: null
         }
         

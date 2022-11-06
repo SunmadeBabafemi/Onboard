@@ -6,12 +6,14 @@ const {
     getAllUniversitiesController,
     viewAUniversityController,
     addAUniversityController,
+    searchUniversityController,
 } = require('./university.controller')
 
 const {
     paginateSchema,
     modelIdSchema,
-    addUniversitySchema
+    addUniversitySchema,
+    searchSchema
     
 } = require('./university.schema')
 
@@ -29,6 +31,12 @@ router.get(
     validateRequest(paginateSchema, 'query'),
     validateRequest(modelIdSchema, 'params'),
     viewAUniversityController
+)
+
+router.get(
+    '/search',
+    validateRequest(searchSchema, 'query'),
+    searchUniversityController
 )
 
 module.exports = router

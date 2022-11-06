@@ -50,10 +50,14 @@ module.exports = (sequelize, DataTypes) =>{
       added_by:{
         type: DataTypes.STRING,
       },
+      course_name:{
+        type: DataTypes.STRING,
+      },
       deleted:{
         type: DataTypes.BOOLEAN,
         defaultValue: false
       }
+
     },
     {
       sequelize,

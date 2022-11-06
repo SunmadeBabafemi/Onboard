@@ -95,3 +95,35 @@ exports.getallClassesController = async (req, res, next) => {
         return next(createError.InternalServerError(error));
     }
 }
+
+exports.editAllClassesController = async (req, res, next) => {
+    try {
+        const {error, message, data} = await ClassService.editAllClasses({
+            limit: req.query.limit,
+            page: req.query.page
+        })
+        const allData = {
+            pagination: data.pagination,
+            courses: data.allClasses
+        }
+
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, allData)(res, HTTP.CREATED);
+    } catch (error) {
+        console.error(error);
+
+        return next(createError.InternalServerError(error));
+    }
+}

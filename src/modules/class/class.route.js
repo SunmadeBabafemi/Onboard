@@ -4,7 +4,8 @@ const validateRequest = require('../../common/middlewares/validateRequest')
 const {
     seedClassesController,
     getallClassesController,
-    viewAClassController
+    viewAClassController,
+    editAllClassesController
 } = require('./class.controller')
 
 const {
@@ -32,5 +33,11 @@ router.get(
     '/all',
     validateRequest(paginateSchema, 'query'),
     getallClassesController
+)
+
+router.patch(
+    '/edit-all',
+    validateRequest(paginateSchema, 'query'),
+    editAllClassesController
 )
 module.exports = router

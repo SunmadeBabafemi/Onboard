@@ -13,7 +13,7 @@ const {
 } = models
 
 
-exports.seachForCourse = async (data) => {
+exports.bigSeachForCourse = async (data) => {
         try {
         const {
             limit,
@@ -24,50 +24,143 @@ exports.seachForCourse = async (data) => {
             country_name
         } = data
         let result = []
-        const foundCourse = await Course.findAll({
-            where: {
-                name: { [Op.like]: `%${course_name}%` },
-            },
-            raw: true,
-        })
-
-        const foundProgram = await Program.findAll({
-             where: {
-                name: { [Op.like]: `%${program_name}%` },
-            },
-            raw: true,
-        })
-        const foundUniversity = await University.findAll({
-            where: {
-                [Op.or]:[
-                    {country: { [Op.like]: `%${country_name}%` }},
-                    {name: { [Op.like]: `%${school_name}%` }},
-                ]
-            },
-            raw: true,
-        })
+        let searchResults = {}
+        let foundCourse = []
+        let filteredCourse = []
+        let foundProgram = []
+        let foundUniversity = []
+        let filteredUniversities = []
+        let uniOfferingACourse = []
+        if(course_name){
+            const course_name_lower = course_name.toLowerCase()
+            foundCourse = await Course.findAll({
+                where: {
+                    name: { [Op.like]: `%${course_name_lower}%` },
+                },
+                raw: true,
+            })
+        }
+        if(program_name){
+            const program_name_to_lower = program_name.toLowerCase()
+            foundProgram = await Program.findAll({
+                where: {
+                    name: { [Op.like]: `%${program_name_to_lower}%` },
+                },
+                raw: true,
+            })
+        }
+        if(country_name){
+            const country = country_name.charAt(0).toUpperCase()+ country_name.slice(1)
+            foundUniversity = await University.findAll({
+                where: {
+                    [Op.or]:[
+                        {country: { [Op.like]: `%${country}%` }},
+                    ]
+                },
+                raw: true,
+            })
+            console.log(foundUniversity);
+        }
+        if(school_name ){
+            const school_name_lower = school_name.toLowerCase()
+            foundUniversity = await University.findAll({
+                where: {
+                    [Op.or]:[
+                        {name: { [Op.like]: `%${school_name_lower}%` }},
+                    ]
+                },
+                raw: true,
+            })
+        }        
+        if(school_name && country_name){
+            const country = country_name.charAt(0).toUpperCase()+ country_name.slice(1)
+            const school_name_lower = school_name.toLowerCase()
+            foundUniversity = await University.findAll({
+                where: {
+                    [Op.or]:[
+                        {country: { [Op.like]: `%${country}%` }},
+                        {name: { [Op.like]: `%${school_name_lower}%` }},
+                    ]
+                },
+                raw: true,
+            })
+        console.log(foundUniversity[0]);
+        }
         if (
             Number(foundCourse.length) > 0 
             && Number(foundProgram.length) < 1 
             && Number(foundUniversity.length) < 1
             )
             {
-                result = foundCourse
+                for(const course of foundCourse){
+                    const uni = await University.findOne({
+                        where:{id: { [Op.like]: `%${course.school_name}%` }}
+                    })
+                    result.push(uni)
+                    const uniqueIds = []
+                    const filters = []
+                    result.filter(async element => {
+                        const isDuplicate = uniqueIds.includes(element.id)
+                        
+                        if(isDuplicate === false){
+                            uniqueIds.push(element.id)
+                            filters.push(element)
+                        } 
+                    })
+                    searchResults = {
+                        courses_found: foundCourse.length,
+                        courses: foundCourse,
+                        number_of_schools: filters.length,
+                        schools: filters,
+                    }
+                }
         } else if (
             Number(foundCourse.length) > 0 
             && Number(foundProgram.length) > 0 
             && Number(foundUniversity.length) < 1
         ){
+            const course_name_lower = course_name.toLowerCase()
             for (const item of foundProgram){
                 const available_course = await Course.findAll({
                     where: {
-                        name: { [Op.like]: `%${course_name}%` },
-                        ProgramId: item.id,
+                        name: { [Op.like]: `%${course_name_lower}%` },
+                        // program_name: { [Op.like]: `%${item.name}%` },
+                        ProgramId: item.id
+
                     },
                 })
-                result.push(...available_course)                
-            }
+                result.push(...available_course)  
+                for(const each of result){
+                    const uni = await University.findOne({where:{id: each.UniversityId}})
+                    foundUniversity.push(uni)  
 
+                }
+                const filters = []
+                const uniqueIds = []
+                foundUniversity.filter(async element => {
+                        const isDuplicate = uniqueIds.includes(element.id)
+                        
+                        if(isDuplicate === false){
+                            uniqueIds.push(element.id)
+                            filters.push(element)
+                        } 
+                    })
+                for(const foundUni of foundUniversity ){
+                    const course = await Course.findOne({
+                         where: {
+                            name: { [Op.like]: `%${course_name_lower}%` },
+                            UniversityId: foundUni.id,
+                        },
+                    })
+                    filteredCourse.push(course)
+                }
+                searchResults = {
+                    no_of_courses: filteredCourse.length,
+                    courses: filteredCourse,
+                    no_of_schools: filters.length,
+                    schools: filters
+                }            
+            }
 
         }
         else if (
@@ -75,6 +168,8 @@ exports.seachForCourse = async (data) => {
             && Number(foundProgram.length) > 0 
             && Number(foundUniversity.length) > 0 
         ){
+            const course_name_lower = course_name.toLowerCase()
+
             for (const university of foundUniversity){
                 const program = await Program.findOne({
                     where:{
@@ -86,12 +181,35 @@ exports.seachForCourse = async (data) => {
                     const available_course = await Course.findAll(
                         {
                             where: {
-                                name: { [Op.like]: `%${course_name}%` },
-                                ProgramId: program.id
+                                name: { [Op.like]: `%${course_name_lower}%` },
+                                // ProgramId: program.id,
+                                program_name: {[Op.like]: `%${program_name}%`}
                             }
                         }
                     )
+                    console.log("courses>>>>>>", available_course);
+
                     result.push(...available_course)
+                    for(const each of available_course){
+                        const uni = await University.findOne({where:{id:each.UniversityId}})
+                        uniOfferingACourse.push(uni)
+                    }
+                     const filters = []
+                    const uniqueIds = []
+                    uniOfferingACourse.filter(async element => {
+                        const isDuplicate = uniqueIds.includes(element.id)
+                        
+                        if(isDuplicate === false){
+                            uniqueIds.push(element.id)
+                            filters.push(element)
+                        } 
+                    })
+                    searchResults = {
+                        no_of_courses: available_course.length,
+                        courses: available_course,
+                        no_of_schools: filters.length,
+                        schools: filters
+                    }
                 }
 
             }
@@ -100,7 +218,10 @@ exports.seachForCourse = async (data) => {
             && Number(foundProgram.length) < 1 
             && Number(foundUniversity.length) > 0 
         ) {
-            result = foundUniversity
+            searchResults = {
+                no_of_schools: foundUniversity.length,
+                schools: foundUniversity
+            }
         } else if(
              Number(foundCourse.length) < 1
             && Number(foundProgram.length) > 0
@@ -108,7 +229,18 @@ exports.seachForCourse = async (data) => {
         ) {
             for (const program of foundProgram){
                 const course = await Course.findAll({where: {ProgramId: program.id}})
-                result.push(...course)
+                const uni = await University.findOne({where: {id: program.UniversityId}})
+                foundUniversity.push(uni)
+                foundCourse.push(...course)
+                searchResults = {
+                    no_of_programs: foundProgram.length,
+                    programs: foundProgram,
+                    // no_of_courses: foundCourse.length,
+                    // courses: foundCourse,
+                    no_of_schools: foundUniversity.length,
+                    schools: foundUniversity
+                }
+
             }
         } else if(
             Number(foundCourse.length) > 0
@@ -123,17 +255,30 @@ exports.seachForCourse = async (data) => {
                         UniversityId: uni.id
                     }
                 })
-                result.push(courses)
+                if(courses){
+                 result.push(courses)
                 }
-            }
-        } else if(
-             Number(foundCourse.length) <1
-            && Number(foundProgram.length) > 0 
-            && Number(foundUniversity.length) <1
-        ) {
-            for(const prog of foundProgram){
-                const courses = await Course.findAll({where:{ProgramId: prog.id}})
-                result.push(...courses)
+                }
+                for(const filter of result){
+                    const uni = await University.findOne({where:{id:filter.UniversityId}})
+                    filteredUniversities.push(uni)
+                }
+                const filters = []
+                const uniqueIds = []
+                filteredUniversities.filter(async element => {
+                    const isDuplicate = uniqueIds.includes(element.id)
+                    
+                    if(isDuplicate === false){
+                        uniqueIds.push(element.id)
+                        filters.push(element)
+                    } 
+                })
+                searchResults = {
+                    no_of_courses: result.length,
+                    courses: result,
+                    no_of_schools: filters.length,
+                    schools: filters
+                }
             }
         } else if (
             Number(foundCourse.length) <1
@@ -142,40 +287,60 @@ exports.seachForCourse = async (data) => {
         ) {
             for(const uni of foundUniversity){
                 for (const prog of foundProgram){
-                    const courses = await Course.findAll({where:{
-                        ProgramId: prog.id,
+                    const filteredProg = await Program.findOne({where:{
+                        id: prog.id,
                         UniversityId: uni.id
                     }})
-                    result.push(...courses)
+                    if(filteredProg !== null){
+                        result.push(filteredProg)
+                    }
                 }
+                for(const filter of result){
+                    if (filter !== null){
+                        const filteredUni = await University.findOne({where:{id: filter.UniversityId}})
+                        filteredUniversities.push(filteredUni)
+                    }
+                    
+                }
+                const filters = []
+                const uniqueIds = []
+                filteredUniversities.filter(async element => {
+                    const isDuplicate = uniqueIds.includes(element.id)
+                    
+                    if(isDuplicate === false){
+                        uniqueIds.push(element.id)
+                        filters.push(element)
+                    } 
+                })
+                searchResults = {
+                    no_of_programs: result.length,
+                    programs: result,
+                    no_of_schools: filters.length,
+                    schools: filters
+                }
+            
             }
         }
  
 
         // paginate the result
-        const paginatedResult = await paginateRaw(result, {
-            limit: Number(limit),
-            page: Number(page)
-        })
-        if (Number(paginatedResult.data.length) < 1){
-            return {
-                error: false,
-                message: "No result found based on your search filter",
-                data: {
-                    foundResults: [],
-                    pagination: null
-                }
-            }
-        } else{
+        // const paginatedResult = await paginateRaw(result, {
+        //     limit: Number(limit),
+        //     page: Number(page)
+        // })
+        // if (Number(paginatedResult.data.length) < 1){
+        //     return {
+        //         error: false,
+        //         message: "No result found based on your search filter",
+        //         data: result
+        //     }
+        // } else{
             return {
                 error: false,
                 message: "search result retreived successfully",
-                data: {
-                    foundResults: paginatedResult,
-                    pagination: paginatedResult.perPage
-                }
+                data: searchResults
             }
-        }
+        // }
 
     } catch (error) {
         console.log(error)
@@ -254,18 +419,42 @@ exports.getallCoursesByUniversity = async(data)=>{
                 data: null
             }
         }
-        const allCourses = await getPaginatedRecords(Course, {
+        const filteredCourses = []
+        const allCourses = await Course.findAll({where:{UniversityId: university.id}})
+        if(allCourses.length < 1) {
+            return {
+                error: false,
+                message: 'No course found',
+                data: {
+                    allCourses: [],
+                    pagination: 0
+                }
+            }
+        }
+        for(const course of allCourses){
+            const allClasses = await Class.findAll({where:{CourseId: course.id}})
+            const fineTunedCourse = {
+                id: course.id,
+                name: course.name,
+                description: course.description,
+                program_name: course.program_name,
+                school_name: course.school_name,
+                available_diet: allClasses
+            }
+            filteredCourses.push(fineTunedCourse)
+        }
+
+
+        const paginatedResult = await paginateRaw(filteredCourses, {
             limit: Number(limit),
             page: Number(page),
-            data:{UniversityId: university.id},
-            selectedFields: ['id', 'name', 'description', 'UniversityId', 'ProgramId']
         })
         return {
             error: false,
             message: "All courses retreived successfully",
             data: {
-                allCourses: allCourses,
-                pagination: allCourses.perPage
+                allCourses: paginatedResult,
+                pagination: paginatedResult.perPage
             }
         }
         
@@ -381,6 +570,108 @@ exports.seedCourses = async (data) => {
         return{
             error: true,
             message: error.message|| "Unable to retreive courses at the moment",
+            data: null
+        }
+    }
+}
+
+exports.editCourseAuto = async (data) => {
+    try {
+        const {limit, page} = data
+        const updatedCourses = []
+        const allCourses = await Course.findAll({where: {deleted: false}})
+        for(const course of allCourses){
+            const program = await Program.findOne({where:{id: course.ProgramId}})
+            const school = await University.findOne({where:{id: course.UniversityId}})
+            await Course.update(
+                {
+                    program_name: program.name,
+                    school_name: school.name
+                },
+                {where: {id: course.id}}
+            )
+            const updatedCourse = await Course.findOne({where:{id: course.id}})
+            updatedCourses.push(updatedCourse)
+        } 
+        if(updatedCourses.length < 1){
+            return {
+                error: false,
+                message: "NO course found",
+                data: {
+                    allCourses: [],
+                    pagination: 0
+                }
+            }
+        }
+
+        const paginatedResult = await paginateRaw(updatedCourses,{
+            limit: Number(limit),
+            page: Number(page)
+        })
+
+        return {
+            error: false,
+            message: "Courses updated successfully",
+            data:{
+                allCourses: paginatedResult,
+                pagination: paginatedResult.perPage
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: error.message || "Error updating all courses at the moment",
+            data: null
+        }
+    }
+}
+
+exports.editProgramsAuto = async (data) => {
+    try {
+        const {limit, page} = data
+        const updatedPrograms = []
+        const allPrograms = await Program.findAll({where: {deleted: false}})
+        for(const program of allPrograms){
+            const school = await University.findOne({where:{id: program.UniversityId}})
+            await Program.update(
+                {
+                    university_name: school.name
+                },
+                {where: {id: program.id}}
+            )
+            const updatedProgram = await Program.findOne({where:{id: program.id}})
+            updatedPrograms.push(updatedProgram)
+        } 
+        if(updatedPrograms.length < 1){
+            return {
+                error: false,
+                message: "NO course found",
+                data: {
+                    allPrograms: [],
+                    pagination: 0
+                }
+            }
+        }
+
+        const paginatedResult = await paginateRaw(updatedPrograms,{
+            limit: Number(limit),
+            page: Number(page)
+        })
+
+        return {
+            error: false,
+            message: "Courses updated successfully",
+            data:{
+                allPrograms: paginatedResult,
+                pagination: paginatedResult.perPage
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: error.message || "Error updating all courses at the moment",
             data: null
         }
     }

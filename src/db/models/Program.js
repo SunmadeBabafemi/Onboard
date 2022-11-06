@@ -28,6 +28,9 @@ module.exports = (sequelize, DataTypes) =>{
       added_by:{
         type: DataTypes.STRING,
       },
+      university_name:{
+        type: DataTypes.STRING,
+      },
       deleted:{
         type: DataTypes.BOOLEAN,
         defaultValue: false

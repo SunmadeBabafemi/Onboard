@@ -621,6 +621,10 @@
                     "field": "password",
                     "seqType": "Sequelize.STRING"
                 },
+                "profile_picture": {
+                    "field": "profile_picture",
+                    "seqType": "Sequelize.STRING"
+                },
                 "isBlocked": {
                     "defaultValue": {
                         "value": false
@@ -660,5 +664,5 @@
             "indexes": []
         }
     },
-    "revision": 14
+    "revision": 15
 }

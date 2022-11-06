@@ -2,11 +2,13 @@ const {Router} = require('express')
 const { authorize, authorizeMerchant } = require('../../common/middlewares/authorize')
 const validateRequest = require('../../common/middlewares/validateRequest')
 const {
-    searchForACourseController,
     seedCoursesController,
     getOneCourseByIdController,
     getCoursesController,
-    getCoursesInAUniversityController
+    getCoursesInAUniversityController,
+    editAllCoursesController,
+    editAllProgramsController,
+    bigSearchForACourseController
 } = require('./course.controller')
 
 const {
@@ -19,8 +21,8 @@ const router = Router()
 
 router.get(
     '/search',
-    validateRequest(searchCourseSchema, 'query'),
-    searchForACourseController
+    // validateRequest(searchCourseSchema, 'query'),
+    bigSearchForACourseController
 )
 
 router.get(
@@ -46,5 +48,18 @@ router.get(
     validateRequest(modelIdSchema, 'params'),
     getCoursesInAUniversityController
 )
+
+router.patch(
+    '/auto-edit',
+    validateRequest(paginateSchema, 'query'),
+    editAllCoursesController
+)
+
+router.patch(
+    '/auto-edit-programs',
+    validateRequest(paginateSchema, 'query'),
+    editAllProgramsController
+)
+
 
 module.exports = router

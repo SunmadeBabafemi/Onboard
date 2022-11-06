@@ -29,6 +29,12 @@ module.exports = (sequelize, DataTypes) =>{
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
+      program_name:{
+        type: DataTypes.STRING,
+      },
+      school_name:{
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,

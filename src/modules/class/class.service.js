@@ -115,7 +115,7 @@ exports.getallClasses = async(data)=>{
         const allClasses = await getPaginatedRecords(Class, {
             limit: Number(limit),
             page: Number(page),
-            selectedFields: ['id', 'class_year', 'class_diet', 'start_date', 'end_date', 'CourseId']
+            selectedFields: ['id', 'class_year', 'class_diet', 'start_date', 'end_date','course_name', 'CourseId']
         })
         return {
             error: false,
@@ -123,6 +123,62 @@ exports.getallClasses = async(data)=>{
             data: {
                 allClasses: allClasses,
                 pagination: allClasses.perPage
+            }
+        }
+        
+    } catch (error) {
+       console.log(error)
+        return{
+            error: true,
+            message: error.message|| "Unable to retreive courses at the moment",
+            data: null
+        } 
+    }
+   
+}
+
+
+
+exports.editAllClasses = async(data)=>{
+    try {
+        const {
+            limit,
+            page
+        } = data
+        const allClasses = await Class.findAll({where:{deleted: false}})
+        
+        if(Number(allClasses.length) < 1){
+            return {
+                error: false,
+                message: "No class found",
+                data: {
+                    allClasses: [],
+                    pagination: 0
+                }
+            }
+        }
+        const updatedClasses = []
+        for(const oneClass of allClasses){
+            const course = await Course.findOne({where:{id: oneClass.CourseId}})
+            await Class.update(
+                {course_name: course.name},
+                {where: {id: oneClass.id}}
+            )
+            const updatedClass = await Class.findOne({where:{id: oneClass.id}})
+            updatedClasses.push(updatedClass)
+        }
+
+        const paginatedClasses = await paginateRaw(updatedClasses,{
+            limit: Number(limit),
+            page:Number(page)
+        })
+
+        return {
+            error: false,
+            message: "All classes retreived successfully",
+            data: {
+                allClasses: paginatedClasses,
+                pagination: paginatedClasses.perPage
             }
         }
         

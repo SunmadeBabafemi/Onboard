@@ -20,7 +20,7 @@ exports.getAllUniversities = async (data) => {
         const allUniversities = await getPaginatedRecords(University, {
             limit: Number(limit),
             page: Number(page),
-            selectedFields: ["id", "name", "picture", "description", "ratings",]
+            selectedFields: ["id", "name", "images", "description", "ratings",]
         })
         return {
             error: false,
@@ -50,6 +50,15 @@ exports.viewUniversity = async (data) => {
             page
         } = data
         const university = await University.findOne({
+           attributes: [
+                "id",
+                "images",
+                "name",
+                "description",
+                "ratings",
+                "created_at",
+                "updated_at"
+            ],
             where:{id}
         })
         if(!university){
@@ -60,7 +69,9 @@ exports.viewUniversity = async (data) => {
             }
         }
 
-        const allUniversityReviews = await Review.findAll({where: {UniversityId: university.id}})
+        const allUniversityReviews = await Review.findAll({
+            where: {UniversityId: university.id}
+        })
 
         const allCoursesOffered = await Course.findAll({where:{UniversityId: university.id}})
         const pagedArray = [...allUniversityReviews, ...allCoursesOffered]
@@ -88,7 +99,6 @@ exports.viewUniversity = async (data) => {
     }
 }
 
-
 exports.addAUniversity = async (payload) => {
     try {
         const {
@@ -102,7 +112,6 @@ exports.addAUniversity = async (payload) => {
         const existingUni = await University.findOne({
             where: {name, country}
         })
-        console.log(existingUni);
         if(existingUni){
             return {
                 error: true,
@@ -110,7 +119,6 @@ exports.addAUniversity = async (payload) => {
                 data: null
             }
         }
-
         const newUni = await University.create({
             name,
             description,
@@ -125,16 +133,24 @@ exports.addAUniversity = async (payload) => {
             imgUrls.push(url)
         }
          await University.update(
-            {
-                picture: imgUrls[0],
-                picture_2: imgUrls[1],
-                picture_3: imgUrls[2],
-                picture_4: imgUrls[3]
+            {   
+                images: imgUrls
             },
             {where: {id: newUni.id}}
         )
 
-    const updatedUni = await University.findOne({where:{id: newUni.id}})
+    const updatedUni = await University.findOne({
+        attributes: [
+            "id",
+            "images",
+            "name",
+            "description",
+            "ratings",
+            "created_at",
+            "updated_at"
+        ],
+        where:{id: newUni.id}
+    })
         return {
             error: false,
             message: "University added successfully",
@@ -165,62 +181,19 @@ exports.editUniversity = async (data) => {
             } 
         }
         const imgUrls = []
-        // console.log(files);
-        if (files.length = 4){
-            for(const file of files) {
+        for(const file of files) {
                 const {path} = file
                 const url = await ImageUploader(path)
                 imgUrls.push(url)
             }
+        if(imgUrls.length > 0){
             await University.update(
                 {
-                    picture: imgUrls[0],
-                    picture_2: imgUrls[1],
-                    picture_3: imgUrls[2],
-                    picture_4: imgUrls[3]
+                    images: imgUrls
                 },
                 {where: {id: singleUniversity.id}}
             )
-        }else if (files.length = 3){
-            for(const file of files) {
-                const {path} = file
-                const url = await ImageUploader(path)
-                imgUrls.push(url)
-            }
-            await University.update(
-                {
-                    picture: imgUrls[0],
-                    picture_2: imgUrls[1],
-                    picture_3: imgUrls[2],
-                },
-                {where: {id: singleUniversity.id}}
-            )
-        } else if (files.length = 2){
-            for(const file of files) {
-                const {path} = file
-                const url = await ImageUploader(path)
-                imgUrls.push(url)
-            }
-            await University.update(
-                {
-                    picture: imgUrls[0],
-                    picture_2: imgUrls[1],
-                },
-                {where: {id: singleUniversity.id}}
-            )
-        } else if (files.length = 1){
-            for(const file of files) {
-                const {path} = file
-                const url = await ImageUploader(path)
-                imgUrls.push(url)
-            }
-            await University.update(
-                {
-                    picture: imgUrls[0],
-                },
-                {where: {id: singleUniversity.id}}
-            )
-        } 
+        }
 
         await University.update(
             {
@@ -231,7 +204,18 @@ exports.editUniversity = async (data) => {
             }}
         )
         
-        const editedUniversity = await University.findOne({where:{id: singleUniversity.id}})
+        const editedUniversity = await University.findOne({
+            attributes: [
+                "id",
+                "images",
+                "name",
+                "description",
+                "ratings",
+                "created_at",
+                "updated_at"
+            ],
+            where:{id: singleUniversity.id}
+        })
         return {
             error: false,
             message: "University edited successfully",

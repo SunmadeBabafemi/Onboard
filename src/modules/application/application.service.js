@@ -17,7 +17,7 @@ const {
 
 
 exports.createApplication = async (data) => {
-        try {
+    try {
         const {
             first_name,
             course_id,
@@ -77,7 +77,8 @@ exports.createApplication = async (data) => {
             CourseId: intendingCourse.id,
             ClassId: class_id,
             user_id,
-            result: url
+            result: url,
+            access_code: (Math.floor(Math.random() * 8999+1000)).toString()
         })
         
         const mailContent = {
@@ -93,6 +94,7 @@ exports.createApplication = async (data) => {
             class_year: application.class_year,
             course_name: application.course_name,
             school_name: application.school_name,
+            access_code: application.access_code
             
         }
 
@@ -122,20 +124,20 @@ exports.createApplication = async (data) => {
 
 exports.searchApplicationByTrackingId = async (data) => {
     try {
-        const {tracking_id, user_id} = data   
+        const {tracking_id,} = data   
         const upper = tracking_id.toUpperCase()
 
         const foundApplication = await Application.findAll({
             where:{
                tracking_id: {[Op.like]: `%${upper}%`},
-               user_id
-            }
+            },
+            attributes:{exclude:['deleted', 'access_code']},
           })
         if(Number(foundApplication.length) < 1) {
             return {
-                error: true,
+                error: false,
                 message: "No application found with that tracking ID",
-                data: null
+                data: []
             }
         }
 
@@ -159,22 +161,22 @@ exports.searchApplicationByTrackingId = async (data) => {
 exports.viewApplication = async (data) => {
         try {
         const {
-            user_id,
-            id
+            id,
+            access_code
         } = data
 
 
         const foundApplication = await Application.findOne({
             where:{
                 id,
-                user_id
+                access_code
             }
           })
         if(!foundApplication) {
             return {
-                error: true,
+                error: false,
                 message: "No application found",
-                data: null
+                data: []
             }
         }
 
@@ -212,7 +214,8 @@ exports.viewApplication = async (data) => {
             application_fees: intending_class.application_fees,
             tracking_id: foundApplication.tracking_id,
             class_diet: foundApplication.class_diet,
-            school_name: foundApplication.school_name
+            school_name: foundApplication.school_name,
+            access_code: foundApplication.access_code
             
         }
         return {

@@ -76,7 +76,8 @@ exports.seedClass = async (data) => {
                     application_opening: new Date().toDateString(),
                     application_closing: setEndDateByMonth(3).toDateString(),
                     course_tuition: Math.floor(Math.random() * 10000),
-                    CourseId: course.id
+                    CourseId: course.id,
+                    course_name: course.name
                 })
                 allClasses.push(course_class)
             }

@@ -20,7 +20,7 @@ exports.getAllUniversities = async (data) => {
         const allUniversities = await getPaginatedRecords(University, {
             limit: Number(limit),
             page: Number(page),
-            selectedFields: ["id", "name", "picture", "description", "ratings",]
+            selectedFields: ["id", "name", "images", "description", "ratings",]
         })
         return {
             error: false,
@@ -51,6 +51,15 @@ exports.viewUniversity = async (data) => {
             page
         } = data
         const university = await University.findOne({
+            attributes: [
+                "id",
+                "images",
+                "name",
+                "description",
+                "ratings",
+                "created_at",
+                "updated_at"
+            ],
             where:{id}
         })
         if(!university){
@@ -96,7 +105,15 @@ exports.searchUniversity = async (data) => {
         } = data
         const lower = search.toLowerCase()
         const universities = await University.findAll({
-            attributes:{excludes:['deleted']},
+           attributes: [
+                "id",
+                "images",
+                "name",
+                "description",
+                "ratings",
+                "created_at",
+                "updated_at"
+            ],
             where:{name: {[Op.like]: `%${lower}%` }}
         })
         if(universities.length < 1){

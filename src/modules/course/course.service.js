@@ -320,27 +320,44 @@ exports.bigSeachForCourse = async (data) => {
                 }
             
             }
-        }
- 
-
-        // paginate the result
-        // const paginatedResult = await paginateRaw(result, {
-        //     limit: Number(limit),
-        //     page: Number(page)
-        // })
-        // if (Number(paginatedResult.data.length) < 1){
-        //     return {
-        //         error: false,
-        //         message: "No result found based on your search filter",
-        //         data: result
-        //     }
-        // } else{
-            return {
-                error: false,
-                message: "search result retreived successfully",
-                data: searchResults
+        } else {
+            let paginatedResult
+            // paginate the result
+            const allUnis = await University.findAll({
+                attributes: [
+                    "id",
+                    "images",
+                    "name",
+                    "description",
+                    "ratings",
+                    "created_at",
+                    "updated_at"
+                ],
+                order: [
+                    ['ratings', 'ASC']
+                ]
+            })
+            if(page){
+                paginatedResult = await paginateRaw(allUnis, {
+                    limit: 10,
+                    page: Number(page)
+                })
+            }else{
+                paginatedResult = await paginateRaw(allUnis, {
+                    limit: 10,
+                    page: 1
+                })
             }
-        // }
+            searchResults = {
+                no_of_schools: allUnis.length,
+                schools: allUnis
+            }
+        }
+        return {
+            error: false,
+            message: "search result retreived successfully",
+            data: searchResults
+        }
 
     } catch (error) {
         console.log(error)

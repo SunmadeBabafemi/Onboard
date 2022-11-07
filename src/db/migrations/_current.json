@@ -156,6 +156,10 @@
                     "field": "school_name",
                     "seqType": "Sequelize.STRING"
                 },
+                "access_code": {
+                    "field": "access_code",
+                    "seqType": "Sequelize.STRING"
+                },
                 "deleted": {
                     "defaultValue": {
                         "value": false
@@ -558,6 +562,14 @@
                     "field": "description",
                     "seqType": "Sequelize.STRING"
                 },
+                "images": {
+                    "field": "images",
+                    "seqType": "Sequelize.STRING"
+                },
+                "pictures": {
+                    "field": "pictures",
+                    "seqType": "Sequelize.ARRAY(Sequelize.STRING)"
+                },
                 "picture": {
                     "field": "picture",
                     "seqType": "Sequelize.STRING"
@@ -684,5 +696,5 @@
             "indexes": []
         }
     },
-    "revision": 16
+    "revision": 19
 }

@@ -27,5 +27,8 @@ exports.applicationIdSchema = Joi.object({
 
 exports.seaerchApplicationSchema = Joi.object({
   tracking_id: Joi.string().required(),
+})
 
+exports.viewApplicationSchema = Joi.object({
+  access_code: Joi.string().required(),
 })

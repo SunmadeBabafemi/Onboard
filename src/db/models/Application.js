@@ -77,6 +77,9 @@ module.exports = (sequelize, DataTypes) =>{
       school_name: {
         type: DataTypes.STRING,
       },
+      access_code: {
+        type: DataTypes.STRING
+      },
       deleted:{
         type: DataTypes.BOOLEAN,
         defaultValue: false

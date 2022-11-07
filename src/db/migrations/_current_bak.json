@@ -148,8 +148,16 @@
                     "field": "course_name",
                     "seqType": "Sequelize.STRING"
                 },
+                "program_name": {
+                    "field": "program_name",
+                    "seqType": "Sequelize.STRING"
+                },
                 "school_name": {
                     "field": "school_name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "access_code": {
+                    "field": "access_code",
                     "seqType": "Sequelize.STRING"
                 },
                 "deleted": {
@@ -259,6 +267,10 @@
                     "field": "added_by",
                     "seqType": "Sequelize.STRING"
                 },
+                "course_name": {
+                    "field": "course_name",
+                    "seqType": "Sequelize.STRING"
+                },
                 "deleted": {
                     "defaultValue": {
                         "value": false
@@ -321,6 +333,14 @@
                     },
                     "field": "deleted",
                     "seqType": "Sequelize.BOOLEAN"
+                },
+                "program_name": {
+                    "field": "program_name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "school_name": {
+                    "field": "school_name",
+                    "seqType": "Sequelize.STRING"
                 },
                 "created_at": {
                     "allowNull": false,
@@ -425,6 +445,10 @@
                 },
                 "added_by": {
                     "field": "added_by",
+                    "seqType": "Sequelize.STRING"
+                },
+                "university_name": {
+                    "field": "university_name",
                     "seqType": "Sequelize.STRING"
                 },
                 "deleted": {
@@ -536,6 +560,10 @@
                 },
                 "description": {
                     "field": "description",
+                    "seqType": "Sequelize.STRING"
+                },
+                "images": {
+                    "field": "images",
                     "seqType": "Sequelize.STRING"
                 },
                 "picture": {
@@ -664,5 +692,5 @@
             "indexes": []
         }
     },
-    "revision": 15
+    "revision": 18
 }

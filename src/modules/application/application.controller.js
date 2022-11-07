@@ -74,26 +74,25 @@ exports.viewApplicationController = async (req, res, next) => {
     try {
         const {error, message, data} = await ApplicationService.viewApplication({
             id: req.params.id,
-            user_id: req.userId
+            access_code: req.body.access_code
         })
 
         if (error) {
-        return next(
-            createError(HTTP.BAD_REQUEST, [
-            {
-                status: RESPONSE.ERROR,
-                message,
-                statusCode:
-                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
-                data,
-            },
-            ])
-        );
+            return next(
+                createError(HTTP.BAD_REQUEST, [
+                {
+                    status: RESPONSE.ERROR,
+                    message,
+                    statusCode:
+                    data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                    data,
+                },
+                ])
+            );
         }
         return createResponse(message, data)(res, HTTP.CREATED);
     } catch (error) {
         console.error(error);
-
         return next(createError.InternalServerError(error));
     }
 }

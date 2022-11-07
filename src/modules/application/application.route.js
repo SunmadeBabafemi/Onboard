@@ -15,7 +15,8 @@ const {
     modelIdSchema,
     paginateSchema,
     seaerchApplicationSchema,
-    applicationIdSchema
+    applicationIdSchema,
+    viewApplicationSchema
 } = require('./application.schema')
 
 const router = Router()
@@ -32,15 +33,16 @@ router.post(
 
 router.post(
     '/search',
-    authorize(),
+    // authorize(),
     validateRequest(seaerchApplicationSchema, 'body'),
     searchApplicationController
 )
 
-router.get(
+router.post(
     '/view/:id',
-    authorize(),
+    // authorize(),
     validateRequest(modelIdSchema, 'params'),
+    validateRequest(viewApplicationSchema, 'body'),
     viewApplicationController
 )
 

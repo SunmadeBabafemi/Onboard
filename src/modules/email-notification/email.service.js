@@ -75,7 +75,8 @@ exports.sendMailToApplicant = async (data) =>{
            class_diet,
            class_year,
            course_name,
-           school_name
+           school_name,
+           access_code
         } = data
         const content = {
         from: KEYS.mailSender,
@@ -96,6 +97,8 @@ exports.sendMailToApplicant = async (data) =>{
             <h5>CLASS YEAR: ${class_year}</h5>
             <h5>COURSE NAME: ${course_name}</h5>
             <h5>SCHOOL NAME: ${school_name}</h5>
+            <h5>ACCESS CODE: ${access_code}</h5>
+
         `
         }
         let transporter =  nodemailer.createTransport({

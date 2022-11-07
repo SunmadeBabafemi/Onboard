@@ -20,6 +20,18 @@ module.exports = (sequelize, DataTypes) =>{
       description: {
         type: DataTypes.STRING,
       },
+      images: {
+        type: DataTypes.STRING,
+        get(){
+          return this.getDataValue('images').split(';')
+        },
+        set(val){
+          this.setDataValue('images', val.join(';'))
+        }
+      },
+      pictures:{
+        type: DataTypes.ARRAY(DataTypes.STRING),
+      },
       picture:{
         type: DataTypes.STRING,
       },

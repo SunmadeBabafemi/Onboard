@@ -350,7 +350,7 @@ exports.bigSeachForCourse = async (data) => {
             }
             searchResults = {
                 no_of_schools: allUnis.length,
-                schools: allUnis
+                schools: paginatedResult
             }
         }
         return {

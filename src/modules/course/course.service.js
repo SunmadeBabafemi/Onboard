@@ -326,7 +326,7 @@ exports.bigSeachForCourse = async (data) => {
             const allUnis = await University.findAll({
                 attributes: [
                     "id",
-                    "images",
+                    "pictures",
                     "name",
                     "description",
                     "ratings",

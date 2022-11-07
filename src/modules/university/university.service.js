@@ -20,7 +20,7 @@ exports.getAllUniversities = async (data) => {
         const allUniversities = await getPaginatedRecords(University, {
             limit: Number(limit),
             page: Number(page),
-            selectedFields: ["id", "name", "images", "description", "ratings",]
+            selectedFields: ["id", "name", "pictures", "description", "ratings",]
         })
         return {
             error: false,
@@ -53,7 +53,7 @@ exports.viewUniversity = async (data) => {
         const university = await University.findOne({
             attributes: [
                 "id",
-                "images",
+                "pictures",
                 "name",
                 "description",
                 "ratings",
@@ -107,7 +107,7 @@ exports.searchUniversity = async (data) => {
         const universities = await University.findAll({
            attributes: [
                 "id",
-                "images",
+                "pictures",
                 "name",
                 "description",
                 "ratings",

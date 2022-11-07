@@ -20,7 +20,7 @@ exports.getAllUniversities = async (data) => {
         const allUniversities = await getPaginatedRecords(University, {
             limit: Number(limit),
             page: Number(page),
-            selectedFields: ["id", "name", "images", "description", "ratings",]
+            selectedFields: ["id", "name", "pictures", "description", "ratings",]
         })
         return {
             error: false,
@@ -52,7 +52,7 @@ exports.viewUniversity = async (data) => {
         const university = await University.findOne({
            attributes: [
                 "id",
-                "images",
+                "pictures",
                 "name",
                 "description",
                 "ratings",
@@ -134,7 +134,7 @@ exports.addAUniversity = async (payload) => {
         }
          await University.update(
             {   
-                images: imgUrls
+                pictures: imgUrls
             },
             {where: {id: newUni.id}}
         )
@@ -142,7 +142,7 @@ exports.addAUniversity = async (payload) => {
     const updatedUni = await University.findOne({
         attributes: [
             "id",
-            "images",
+            "pictures",
             "name",
             "description",
             "ratings",
@@ -189,7 +189,7 @@ exports.editUniversity = async (data) => {
         if(imgUrls.length > 0){
             await University.update(
                 {
-                    images: imgUrls
+                    pictures: imgUrls
                 },
                 {where: {id: singleUniversity.id}}
             )
@@ -207,7 +207,7 @@ exports.editUniversity = async (data) => {
         const editedUniversity = await University.findOne({
             attributes: [
                 "id",
-                "images",
+                "pictures",
                 "name",
                 "description",
                 "ratings",

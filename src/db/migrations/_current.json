@@ -562,29 +562,9 @@
                     "field": "description",
                     "seqType": "Sequelize.STRING"
                 },
-                "images": {
-                    "field": "images",
-                    "seqType": "Sequelize.STRING"
-                },
                 "pictures": {
                     "field": "pictures",
                     "seqType": "Sequelize.ARRAY(Sequelize.STRING)"
-                },
-                "picture": {
-                    "field": "picture",
-                    "seqType": "Sequelize.STRING"
-                },
-                "picture_2": {
-                    "field": "picture_2",
-                    "seqType": "Sequelize.STRING"
-                },
-                "picture_3": {
-                    "field": "picture_3",
-                    "seqType": "Sequelize.STRING"
-                },
-                "picture_4": {
-                    "field": "picture_4",
-                    "seqType": "Sequelize.STRING"
                 },
                 "address": {
                     "field": "address",
@@ -696,5 +676,5 @@
             "indexes": []
         }
     },
-    "revision": 19
+    "revision": 21
 }

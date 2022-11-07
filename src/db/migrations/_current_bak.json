@@ -562,9 +562,9 @@
                     "field": "description",
                     "seqType": "Sequelize.STRING"
                 },
-                "images": {
-                    "field": "images",
-                    "seqType": "Sequelize.STRING"
+                "pictures": {
+                    "field": "pictures",
+                    "seqType": "Sequelize.ARRAY(Sequelize.STRING)"
                 },
                 "picture": {
                     "field": "picture",
@@ -692,5 +692,5 @@
             "indexes": []
         }
     },
-    "revision": 18
+    "revision": 20
 }

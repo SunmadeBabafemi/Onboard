@@ -23,7 +23,7 @@ const router = Router()
 
 router.post(
     '/create/:course_id/:class_id',
-    authorize(),
+    // authorize(),
     upload.single('result'),
     validateRequest(applicationIdSchema, 'params'),
     // validateRequest(createApplicationSchema, 'body'),

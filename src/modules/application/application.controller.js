@@ -12,6 +12,7 @@ exports.createApplicationController = async (req, res, next) => {
             class_id:req.params.class_id,
             first_name: req.body.first_name,
             last_name: req.body.last_name,
+            middle_name: req.body.middle_name,
             phone_number: req.body.phone_number,
             email: req.body.email,
             nationality: req.body.nationality,

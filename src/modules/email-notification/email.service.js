@@ -76,6 +76,7 @@ exports.sendMailToApplicant = async (data) =>{
            class_year,
            course_name,
            school_name,
+           program_name,
            access_code
         } = data
         const content = {
@@ -97,6 +98,7 @@ exports.sendMailToApplicant = async (data) =>{
             <h5>CLASS YEAR: ${class_year}</h5>
             <h5>COURSE NAME: ${course_name}</h5>
             <h5>SCHOOL NAME: ${school_name}</h5>
+            <h5>PROGRAM NAME: ${program_name}</h5>
             <h5>ACCESS CODE: ${access_code}</h5>
 
         `

@@ -22,7 +22,8 @@ exports.createApplication = async (data) => {
             first_name,
             course_id,
             class_id,
-            last_name, 
+            last_name,
+            middle_name, 
             phone_number,
             email,
             nationality,
@@ -47,6 +48,7 @@ exports.createApplication = async (data) => {
         }
         const intendingClass = await Class.findOne({where:{id: class_id}})
         const intendingSchool = await University.findOne({where:{id: intendingCourse.UniversityId}})
+        const intendingProgram = await Program.findOne({where:{id: intendingCourse.ProgramId}})
         const alreadyApplied = await Application.findOne({
             where:{
                 email,
@@ -64,6 +66,7 @@ exports.createApplication = async (data) => {
         const application = await Application.create({
             first_name,
             last_name,
+            middle_name,
             phone_number,
             email,
             nationality,
@@ -73,6 +76,7 @@ exports.createApplication = async (data) => {
             class_year: intendingClass.class_year,
             class_diet: intendingClass.class_diet,
             course_name: intendingCourse.name,
+            program_name: intendingProgram.name,
             school_name: intendingSchool.name,
             CourseId: intendingCourse.id,
             ClassId: class_id,
@@ -94,6 +98,7 @@ exports.createApplication = async (data) => {
             class_year: application.class_year,
             course_name: application.course_name,
             school_name: application.school_name,
+            program_name: application.program_name,
             access_code: application.access_code
             
         }

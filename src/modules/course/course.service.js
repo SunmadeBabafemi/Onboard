@@ -94,7 +94,7 @@ exports.bigSeachForCourse = async (data) => {
             {
                 for(const course of foundCourse){
                     const uni = await University.findOne({
-                        where:{id: { [Op.like]: `%${course.school_name}%` }}
+                        where:{name: { [Op.like]: `%${course.school_name}%` }}
                     })
                     result.push(uni)
                     const uniqueIds = []

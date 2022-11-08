@@ -120,8 +120,8 @@ exports.addAUniversity = async (payload) => {
             }
         }
         const newUni = await University.create({
-            name,
-            description,
+            name: String(name).toLowerCase(),
+            description: String(description).toLowerCase(),
             address,
             country,
             added_by: admin.email,

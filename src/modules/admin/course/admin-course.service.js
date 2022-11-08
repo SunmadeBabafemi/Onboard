@@ -113,8 +113,8 @@ exports.addACourse = async (data) => {
         }
 
         const newCourse = await Course.create({
-            name: course_name,
-            description,
+            name: String(course_name).toLowerCase(),
+            description: String(description).toLowerCase(),
             added_by: admin_email,
             ProgramId: availableProgram.id,
             UniversityId: foundUniversity.id

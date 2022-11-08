@@ -49,8 +49,8 @@ exports.addAProgram = async (data) => {
             }
         }
         const newProgram = await Program.create({
-            name,
-            description,
+            name: String(name).toLowerCase(),
+            description: String(description).toLowerCase(),
             duration,
             UniversityId: existingUniversity.id,
             added_by: admin_email,

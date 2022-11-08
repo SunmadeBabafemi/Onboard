@@ -328,6 +328,7 @@ exports.bigSeachForCourse = async (data) => {
                     "id",
                     "pictures",
                     "name",
+                    "country",
                     "description",
                     "ratings",
                     "created_at",
@@ -374,7 +375,7 @@ exports.bigSeachForCourse = async (data) => {
 exports.searchCourseUnderAUniversity = async (data) => {
     try {
         const {search, university_id} = data
-
+        const courseArray = []
         const foundCourses = await Course.findAll({
             where:{
                 name:{[Op.like]: `%${search}%`},
@@ -389,10 +390,23 @@ exports.searchCourseUnderAUniversity = async (data) => {
             }
         }
 
+        for(const course of foundCourses) {
+            const diets = await Class.findAll({where:{CourseId: course.id}})
+            const filteredCourse = {
+                id: course.id,
+                name: course.name,
+                description: course.description,
+                program_name: course.program_name,
+                diets: diets,
+                school_name: course.school_name
+            }
+            courseArray.push(filteredCourse)
+        }
+
         return {
             error: false,
             message: "Courses retrieved successfully",
-            data: foundCourses
+            data: courseArray
         }
     } catch (error) {
         console.log(error);

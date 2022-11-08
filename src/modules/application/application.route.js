@@ -7,7 +7,6 @@ const {
     searchApplicationController,
     viewApplicationController,
     myApplicationsController,
-    uploadResultController
 } = require('./application.controller')
 
 const {

@@ -140,9 +140,9 @@ exports.searchApplicationByTrackingId = async (data) => {
           })
         if(Number(foundApplication.length) < 1) {
             return {
-                error: false,
+                error: true,
                 message: "No application found with that tracking ID",
-                data: []
+                data: null
             }
         }
 
@@ -174,14 +174,21 @@ exports.viewApplication = async (data) => {
         const foundApplication = await Application.findOne({
             where:{
                 id,
-                access_code
             }
           })
         if(!foundApplication) {
             return {
-                error: false,
+                error: true,
                 message: "No application found",
-                data: []
+                data: null
+            }
+        }
+
+        if(String(foundApplication.access_code) !== String(access_code)){
+            return {
+                error: true,
+                message: "Wrong access code inputed",
+                data: null
             }
         }
 

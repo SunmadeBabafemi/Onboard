@@ -16,6 +16,17 @@ exports.modelIdSchema = Joi.object({
   id: Joi.string().required(),
 })
 
+exports.statusSchema = Joi.object({
+  status: Joi.string().required(),
+  limit: Joi.number().positive().required(),
+  page: Joi.number().positive().required(),
+})
+
+exports.updateStatusSchema = Joi.object({
+  status: Joi.string().required(),
+
+})
+
 exports.searchApplicationSchema = Joi.object({
   tracking_id: Joi.string().required(),
 

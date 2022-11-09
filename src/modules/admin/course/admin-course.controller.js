@@ -28,7 +28,7 @@ exports.getAllCoursesInAUniversityController = async(req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.CREATED);
+        return createResponse(message, allData)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 
@@ -54,7 +54,7 @@ exports.viewOneCourseByIdController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 
@@ -86,9 +86,9 @@ exports.addACourseController = async (req, res, next) => {
         }
         return createResponse(message, data)(res, HTTP.CREATED);
     } catch (error) {
-        console.error(err);
+        console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }
 
@@ -112,7 +112,7 @@ exports.editACourseController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (err) {
         console.error(err);
 
@@ -138,7 +138,7 @@ exports.deleteACourseController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (err) {
         console.error(err);
 

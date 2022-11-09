@@ -22,7 +22,7 @@ exports.viewAClassController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 
@@ -88,7 +88,7 @@ exports.getallClassesController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.CREATED);
+        return createResponse(message, allData)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 
@@ -120,7 +120,7 @@ exports.editAllClassesController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.CREATED);
+        return createResponse(message, allData)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 

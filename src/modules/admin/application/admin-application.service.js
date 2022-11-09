@@ -139,6 +139,7 @@ exports.viewApplication = async (data) => {
             application_fees: foundApplication.application_fees,
             intending_course: courseApplied.name,
             course_description: courseApplied.description,
+            phone_number: foundApplication.phone_number,
             program: courseProgram.name,
             duration: courseProgram.duration,
             class: intending_class.class_year,
@@ -165,5 +166,100 @@ exports.viewApplication = async (data) => {
             data: null
         }
         
+    }
+}
+
+
+exports.getApplicationBYStatus = async (data) => {
+        try {
+        const {
+            limit, 
+            page,
+            status
+        } = data
+        let paginatedResult
+        const allApplications = await Application.findAll({
+            attributes:{excludes:['deleted']},
+            where:{status: String(status).toLocaleLowerCase()}
+        })
+        
+        if(Number(allApplications.length) < 1){
+            return {
+                error: false,
+                message: 'No applications found',
+                data: {
+                    applications: [],
+                    pagination: null
+                }
+            }
+        } else{
+             paginatedResult = await paginateRaw(
+                allApplications,
+                {
+                    limit: Number(limit),
+                    page: Number(page)
+                }
+            )
+            return {
+                error: false,
+                message: `All Applications by status: ${status} retrieved successfully`,
+                data: {
+                    applications: paginatedResult,
+                    pagination: paginatedResult.perPage
+                }
+            }
+        }
+ 
+        
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: error.message || `Unable to retrieve applications by status at the moment`,
+            data: null
+        }
+    }
+
+}
+
+exports.updateApplicationStaus = async (payload) =>{
+    try {
+        const {
+            application_id,
+            status
+        } = payload
+
+        const existingApplication = await Application.findOne({
+            where:{
+                id: application_id,
+                deleted: false
+            }
+        })
+
+        if(!existingApplication){
+            return{
+                error: true,
+                message: "Application Not Found",
+                data: null
+            }
+        }
+
+        await Application.update(
+            {status: String(status).toLocaleLowerCase()},
+            {where:{id: existingApplication.id}}
+        )
+            const updatedApplication = await Application.findOne({where:{id: application_id}})
+            return{
+                error: false,
+                message: `Application status changed to ${status} successfully`,
+                data: updatedApplication
+            }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: error.message || "Unable to retrieve applications at the moment",
+            data: null
+        }
     }
 }

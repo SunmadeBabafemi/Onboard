@@ -6,12 +6,16 @@ const upload = require('../../../common/config/multer')
 const { 
     getAllApplicationsController,
     searchApplicationController,
-    viewApplicationController
+    viewApplicationController,
+    getApplicationsByStatusController,
+    updateApplicationStatusController
 } = require('./admin-application.controller')
 const {
     paginateSchema,
     searchApplicationSchema,
-    modelIdSchema
+    modelIdSchema,
+    statusSchema,
+    updateStatusSchema
 } = require('./admin-application.schema')
 
 const router = Router()
@@ -35,6 +39,21 @@ router.get(
     authorizeAdmin,
     validateRequest(modelIdSchema, 'params'),
     viewApplicationController
+)
+
+router.patch(
+    '/update/:id',
+    authorizeAdmin,
+    validateRequest(modelIdSchema, 'params'),
+    validateRequest(updateStatusSchema, 'query'),
+    updateApplicationStatusController
+)
+
+router.get(
+    '/by-status',
+    validateRequest(statusSchema, "query"),
+    authorizeAdmin,
+    getApplicationsByStatusController
 )
 
 module.exports = router

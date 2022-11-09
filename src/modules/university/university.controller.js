@@ -31,7 +31,7 @@ exports.getAllUniversitiesController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.CREATED);
+        return createResponse(message, allData)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 
@@ -65,7 +65,7 @@ exports.viewAUniversityController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.CREATED);
+        return createResponse(message, allData)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 
@@ -92,7 +92,7 @@ exports.searchUniversityController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 

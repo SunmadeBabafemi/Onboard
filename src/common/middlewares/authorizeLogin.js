@@ -16,7 +16,7 @@ exports.authorizeLogin = async (req, _, next) => {
     });
     if (!user) {
       return next(
-        createError(HTTP.OK, [
+        createError(HTTP.NOT_FOUND, [
           {
             status: RESPONSE.ERROR,
             message: `User does not Exist`,
@@ -43,7 +43,7 @@ exports.authMerchLogin = async (req, _, next) => {
     });
     if (!merchant) {
       return next(
-        createError(HTTP.OK, [
+        createError(HTTP.NOT_FOUND, [
           {
             status: RESPONSE.ERROR,
             message: `Merchant does not Exist`,
@@ -72,7 +72,7 @@ exports.authAdminLogin = async (req, _, next) => {
     });
     if (!admin) {
       return next(
-        createError(HTTP.OK, [
+        createError(HTTP.NOT_FOUND, [
           {
             status: RESPONSE.ERROR,
             message: `Admin does not Exist`,

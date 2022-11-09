@@ -34,9 +34,9 @@ exports.addAClassController = async (req, res, next) => {
         }
         return createResponse(message, data)(res, HTTP.CREATED);
     } catch (error) {
-        console.error(err);
+         console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }
 
@@ -60,11 +60,11 @@ exports.editAClassController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
-    } catch (err) {
-        console.error(err);
+        return createResponse(message, data)(res, HTTP.OK);
+    } catch (error) {
+         console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }
 
@@ -86,7 +86,7 @@ exports.deleteAClassController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (err) {
         console.error(err);
 
@@ -112,7 +112,7 @@ exports.viewAClassController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (err) {
         console.error(err);
 
@@ -144,7 +144,7 @@ exports.getAllClassesOfAcourseController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.CREATED);
+        return createResponse(message, allData)(res, HTTP.OK);
     } catch (err) {
         console.error(err);
 

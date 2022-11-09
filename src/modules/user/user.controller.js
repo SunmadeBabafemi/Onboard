@@ -25,9 +25,9 @@ exports.registerUserController = async (req, res, next) => {
         }
         return createResponse(message, data)(res, HTTP.CREATED);
     } catch (error) {
-        console.error(err);
+        console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }
 
@@ -48,11 +48,11 @@ exports.googleUserAuthController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
-        console.error(err);
+        console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }
 
@@ -74,11 +74,11 @@ exports.completeSignupController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
-        console.error(err);
+        console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }
 
@@ -99,11 +99,11 @@ exports.loginUserController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
-        console.error(err);
+        console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }
 
@@ -124,11 +124,11 @@ exports.logoutUserController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
-        console.error(err);
+        console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }
 
@@ -154,11 +154,11 @@ exports.editUserProfileController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
-        console.error(err);
+        console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }
 
@@ -180,11 +180,11 @@ exports.forgotPasswordController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
-        console.error(err);
+        console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }
 
@@ -205,10 +205,10 @@ exports.resetPasswordController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
-        console.error(err);
+        console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }

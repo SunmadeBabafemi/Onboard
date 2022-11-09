@@ -63,7 +63,7 @@ exports.searchApplicationController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 
@@ -91,7 +91,7 @@ exports.viewApplicationController = async (req, res, next) => {
                 ])
             );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
         return next(createError.InternalServerError(error));
@@ -122,7 +122,7 @@ exports.myApplicationsController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.CREATED);
+        return createResponse(message, allData)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 

@@ -29,9 +29,9 @@ exports.addAProgramController = async (req, res, next) => {
         }
         return createResponse(message, data)(res, HTTP.CREATED);
     } catch (error) {
-        console.error(err);
+        console.error(error);
 
-        return next(createError.InternalServerError(err));
+        return next(createError.InternalServerError(error));
     }
 }
 
@@ -56,7 +56,7 @@ exports.editAProgramController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (err) {
         console.error(err);
 
@@ -84,7 +84,7 @@ exports.deleteAProgramController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, data)(res, HTTP.CREATED);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (err) {
         console.error(err);
 
@@ -92,27 +92,3 @@ exports.deleteAProgramController = async (req, res, next) => {
     }
 }
 
-// exports.deleteAUniversityController = async (req, res, next) => {
-//     try {
-//         const {error, message, data} = await universityService.deleteUniversity(req.params.id)
-
-//         if (error) {
-//         return next(
-//             createError(HTTP.BAD_REQUEST, [
-//             {
-//                 status: RESPONSE.ERROR,
-//                 message,
-//                 statusCode:
-//                     data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
-//                 data,
-//             },
-//             ])
-//         );
-//         }
-//         return createResponse(message, data)(res, HTTP.CREATED);
-//     } catch (err) {
-//         console.error(err);
-
-//         return next(createError.InternalServerError(err));
-//     }
-// }

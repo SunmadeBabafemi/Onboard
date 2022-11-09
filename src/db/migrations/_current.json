@@ -117,7 +117,7 @@
                         "value": "pending"
                     },
                     "field": "status",
-                    "seqType": "Sequelize.ENUM('in review', 'pending', 'granted', 'denied')"
+                    "seqType": "Sequelize.ENUM('pending', 'active', 'accepted', 'rejected', 'canceled')"
                 },
                 "application_fees": {
                     "field": "application_fees",
@@ -676,5 +676,5 @@
             "indexes": []
         }
     },
-    "revision": 21
+    "revision": 29
 }

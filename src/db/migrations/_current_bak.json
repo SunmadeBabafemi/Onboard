@@ -112,12 +112,12 @@
                     "field": "phone_number",
                     "seqType": "Sequelize.STRING"
                 },
-                "status": {
+                "application_status": {
                     "defaultValue": {
                         "value": "pending"
                     },
-                    "field": "status",
-                    "seqType": "Sequelize.ENUM('in review', 'pending', 'granted', 'denied')"
+                    "field": "application_status",
+                    "seqType": "Sequelize.ENUM('pending', 'active', 'accepted', 'rejected', 'canceled')"
                 },
                 "application_fees": {
                     "field": "application_fees",
@@ -566,22 +566,6 @@
                     "field": "pictures",
                     "seqType": "Sequelize.ARRAY(Sequelize.STRING)"
                 },
-                "picture": {
-                    "field": "picture",
-                    "seqType": "Sequelize.STRING"
-                },
-                "picture_2": {
-                    "field": "picture_2",
-                    "seqType": "Sequelize.STRING"
-                },
-                "picture_3": {
-                    "field": "picture_3",
-                    "seqType": "Sequelize.STRING"
-                },
-                "picture_4": {
-                    "field": "picture_4",
-                    "seqType": "Sequelize.STRING"
-                },
                 "address": {
                     "field": "address",
                     "seqType": "Sequelize.STRING"
@@ -692,5 +676,5 @@
             "indexes": []
         }
     },
-    "revision": 20
+    "revision": 28
 }

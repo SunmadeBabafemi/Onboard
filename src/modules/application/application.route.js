@@ -7,6 +7,7 @@ const {
     searchApplicationController,
     viewApplicationController,
     myApplicationsController,
+    cancelMyApplicationController,
 } = require('./application.controller')
 
 const {
@@ -43,6 +44,14 @@ router.post(
     validateRequest(modelIdSchema, 'params'),
     validateRequest(viewApplicationSchema, 'body'),
     viewApplicationController
+)
+
+router.patch(
+    '/cancel/:id',
+    // authorize(),
+    validateRequest(modelIdSchema, 'params'),
+    validateRequest(viewApplicationSchema, 'body'),
+    cancelMyApplicationController
 )
 
 router.get(

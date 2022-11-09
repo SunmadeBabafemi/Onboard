@@ -333,3 +333,57 @@ exports.myApplications = async (data) => {
         
     }
 }
+
+exports.cancelMyApplication = async (data) => {
+        try {
+        const {
+            id,
+            access_code
+        } = data
+
+
+        const foundApplication = await Application.findOne({
+            where:{
+                id,
+            }
+          })
+        if(!foundApplication) {
+            return {
+                error: true,
+                message: "No application found",
+                data: null
+            }
+        }
+
+        if(String(foundApplication.access_code) !== String(access_code)){
+            return {
+                error: true,
+                message: "Wrong Access Code inputed",
+                data: null
+            }
+        }
+
+       await Application.update(
+        {status: 'canceled'},
+        {where:{id: foundApplication.id}}
+       )
+       const canceledApplication = await Application.findOne({
+        attributes:["first_name", "last_name", "tracking_id" , "status","course_name", "program_name", "school_name"],
+        where: {id: foundApplication.id}
+    })
+        return {
+            error: false,
+            message: `application of tracking id : ${canceledApplication.tracking_id},  ${canceledApplication.status} successfully`,
+            data: null
+        }
+
+    } catch (error) {
+        console.log(error)
+        return{
+            error: true,
+            message: error.message|| "Unable to cancel application at the moment",
+            data: null
+        }
+        
+    }
+}

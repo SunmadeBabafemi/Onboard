@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const { authorize, authorizeMerchant } = require('../../common/middlewares/authorize')
+const { authorize, } = require('../../common/middlewares/authorize')
 const validateRequest = require('../../common/middlewares/validateRequest')
 const {
     addAReviewController, getallReviewsOfAUniversityController

@@ -1,6 +1,5 @@
 const {Router} = require('express')
 const{authorizeSuperAdmin, authorizeAdmin} = require('../../../common/middlewares/authorize')
-const {authAdminLogin, } = require('../../../common/middlewares/authorizeLogin')
 const validateRequest = require('../../../common/middlewares/validateRequest')
 const { 
     addAProgramController,

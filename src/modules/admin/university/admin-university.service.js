@@ -20,7 +20,17 @@ exports.getAllUniversities = async (data) => {
         const allUniversities = await getPaginatedRecords(University, {
             limit: Number(limit),
             page: Number(page),
-            selectedFields: ["id", "name", "pictures", "description", "ratings",]
+            selectedFields:[
+                "id",
+                "pictures",
+                "name",
+                "description",
+                "address",
+                "country",
+                "ratings",
+                "created_at",
+                "updated_at"
+            ],
         })
         return {
             error: false,
@@ -124,19 +134,8 @@ exports.viewUniversity = async (data) => {
     try {
         const{
             id,
-            limit,
-            page
         } = data
         const university = await University.findOne({
-           attributes: [
-                "id",
-                "pictures",
-                "name",
-                "description",
-                "ratings",
-                "created_at",
-                "updated_at"
-            ],
             where:{id}
         })
         if(!university){
@@ -147,25 +146,11 @@ exports.viewUniversity = async (data) => {
             }
         }
 
-        const allUniversityReviews = await Review.findAll({
-            where: {UniversityId: university.id}
-        })
-
-        // const allCoursesOffered = await Course.findAll({where:{UniversityId: university.id}})
-        // const pagedArray = [...allUniversityReviews, ...allCoursesOffered]
-        const paginatedResult = await paginateRaw(allUniversityReviews, {
-            limit: Number(limit),
-            page: Number(page)
-        })
         return {
             error: false,
             message: "University retrieved successfully",
-            data: {
-                university: university,
-                reviews: paginatedResult,
-                pagination: paginatedResult.perPage
-            }
-        }
+            data: university
+        }    
     } catch (error) {
        console.log(error)
         return{

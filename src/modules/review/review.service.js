@@ -16,18 +16,20 @@ exports.addAReview = async(data) => {
         const {
             body,
             user,
-            university_id
+            university_id,
+            review_author
         } = data
         const review = await Review.create({
             ...body,
-            author: user.email,
+            author: user?.email? user.email : "Anonymous",
             UniversityId: university_id
         })
 
         const result = await Review.findAll({
              attributes: [
                 [Sequelize.fn('AVG', Sequelize.cast(Sequelize.col('rating'), 'integer')), 'avgRating']
-            ]
+            ],
+            where:{deleted: false}
         })
         const avgRating = result[0].dataValues.avgRating
         await University.update(
@@ -60,8 +62,23 @@ exports.getAllReviewOfAUniversity = async(data) => {
             id
         } = data
         const allReviews = await Review.findAll({
-            attributes:{excludes:['deleted']},
-            where:{UniversityId:id}})
+            where:{
+                UniversityId:id,
+                deleted: false
+            }
+        })
+
+        if(allReviews.length < 1){
+            return{
+                error: false,
+                message: "No Reviews Yet",
+                data: {
+                    reviews: [],
+                    pagination: 0,
+                    total_reviews: 0
+                }
+            }
+        }
 
         const paginatedResult = await paginateRaw(
             allReviews,
@@ -73,7 +90,8 @@ exports.getAllReviewOfAUniversity = async(data) => {
             message: "Review submitted successfully",
             data: {
                 reviews: paginatedResult,
-                pagination: paginatedResult.perPage
+                pagination: paginatedResult.perPage,
+                total_reviews: allReviews.length
             }
         }
     } catch (error) {

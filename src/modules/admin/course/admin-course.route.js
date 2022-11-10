@@ -7,7 +7,8 @@ const {
     editACourseController,
     deleteACourseController,
     getAllCoursesInAUniversityController,
-    viewOneCourseByIdController
+    viewOneCourseByIdController,
+    getAllCoursesInAProgramController
 } = require('./admin-course.controller')
 const {
 addCourseBodySchema,
@@ -24,6 +25,14 @@ router.get(
     validateRequest(paginateSchema, 'query'),
     getAllCoursesInAUniversityController
 )
+
+router.get(
+    '/by-program/:id',
+    validateRequest(modelIdSchema, 'params'),
+    validateRequest(paginateSchema, 'query'),
+    getAllCoursesInAProgramController
+)
+
 
 router.get(
     '/view/:id',

@@ -75,14 +75,7 @@ exports.viewAUniversityController = async (req, res, next) => {
     try {
         const {error, message, data} = await universityService.viewUniversity({
             id: req.params.id,
-            limit: req.query.limit,
-            page: req.query.page
         })
-        const allData = {
-            university: data.university,
-            pagination: data.pagination,
-            reviews: data.reviews
-        }
 
         if (error) {
         return next(
@@ -97,7 +90,7 @@ exports.viewAUniversityController = async (req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.OK);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 

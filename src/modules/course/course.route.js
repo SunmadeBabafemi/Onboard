@@ -9,7 +9,8 @@ const {
     editAllCoursesController,
     editAllProgramsController,
     bigSearchForACourseController,
-    searchForACourseUnderAUniversityController
+    searchForACourseUnderAUniversityController,
+    getCoursesInAProgramController
 } = require('./course.controller')
 
 const {
@@ -55,6 +56,13 @@ router.get(
     validateRequest(paginateSchema, 'query'),
     validateRequest(modelIdSchema, 'params'),
     getCoursesInAUniversityController
+)
+
+router.get(
+    '/by-program/:id',
+    validateRequest(paginateSchema, 'query'),
+    validateRequest(modelIdSchema, 'params'),
+    getCoursesInAProgramController
 )
 
 router.patch(

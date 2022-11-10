@@ -11,7 +11,7 @@ const admin_university = require('./admin/university/admin-university.route')
 const admin_program = require('./admin/program/admin-program.route')
 const admin_class = require('./admin/class/admin-class.route.js')
 const admin_application = require('./admin/application/admin-application.route')
-
+const admin_review = require('./admin/review/admin-review.route')
 
 
 
@@ -35,6 +35,8 @@ module.exports = () => {
   router.use("/admin/program", admin_program);
   router.use('/admin/class', admin_class)
   router.use('/admin/applications', admin_application)
+  router.use('/admin/reviews', admin_review)
+
 
 
 

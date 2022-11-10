@@ -28,7 +28,8 @@ exports.getAllCoursesInAUniversity = async (payload) => {
                 message: "No courses found for this university",
                 data: {
                     courses: [],
-                    pagination:  null
+                    pagination:  null,
+                    total_courses: 0
                 }
             }
         } else {
@@ -44,7 +45,56 @@ exports.getAllCoursesInAUniversity = async (payload) => {
                 message: "All courses retrieved successfully",
                 data: {
                     courses: paginatedResult,
-                    pagination: paginatedResult.perPage
+                    pagination: paginatedResult.perPage,
+                    total_courses: allUniversityCourses.length
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: error.message || "Unable to retrieve courses at the moment",
+            data: null
+        }
+    }
+}
+
+exports.getAllCoursesInAProgram = async (payload) => {
+    try {
+        const {
+            limit,
+            page,
+            program_id
+        } = payload
+        let paginatedResult
+        const allUniversityCourses = await Course.findAll({where:{ProgramId: program_id}})
+       
+        if(Number(allUniversityCourses.length) < 1) {
+            return {
+                error: false,
+                message: "No courses found for this program",
+                data: {
+                    courses: [],
+                    pagination:  null,
+                    total_courses: 0
+                }
+            }
+        } else {
+            paginatedResult = await paginateRaw(
+            allUniversityCourses,
+                {
+                    limit: Number(limit),
+                    page: Number(page)
+                }
+            )
+            return {
+                error: false,
+                message: "All courses retrieved successfully",
+                data: {
+                    courses: paginatedResult,
+                    pagination: paginatedResult.perPage,
+                    total_courses: allUniversityCourses.length
                 }
             }
         }

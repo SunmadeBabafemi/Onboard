@@ -11,10 +11,6 @@ exports.getAllCoursesInAUniversityController = async(req, res, next) => {
             page: req.query.page,
             university_id: req.params.id
         })
-        const allData = {
-            allCourses: data.courses,
-            pagination: data.pagination
-        }
         if (error) {
         return next(
             createError(HTTP.BAD_REQUEST, [
@@ -28,7 +24,35 @@ exports.getAllCoursesInAUniversityController = async(req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.OK);
+        return createResponse(message, data)(res, HTTP.OK);
+    } catch (error) {
+        console.error(error);
+
+        return next(createError.InternalServerError(error));
+    }
+}
+
+exports.getAllCoursesInAProgramController = async(req, res, next) => {
+    try {
+        const {error, message, data } = await courseService.getAllCoursesInAProgram({
+            limit: req.query.limit,
+            page: req.query.page,
+            program_id: req.params.id
+        })
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 

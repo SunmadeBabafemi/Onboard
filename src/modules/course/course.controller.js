@@ -203,6 +203,36 @@ exports.getCoursesInAUniversityController = async (req, res, next) => {
     }
 }
 
+exports.getCoursesInAProgramController = async (req, res, next) => {
+    try {
+        const {error, message, data} = await CourseService.getallCoursesByProgram({
+            id: req.params.id,
+            limit: req.query.limit,
+            page: req.query.page
+        })
+
+
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, data)(res, HTTP.OK);
+    } catch (error) {
+        console.error(error);
+
+        return next(createError.InternalServerError(error));
+    }
+}
+
 exports.editAllCoursesController = async (req, res, next) => {
     try {
         const {error, message, data} = await CourseService.editCourseAuto({

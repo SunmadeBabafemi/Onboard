@@ -473,7 +473,10 @@ exports.getallCoursesByUniversity = async(data)=>{
             page
         } = data
         const university = await University.findOne({
-            where: {id}
+            where: {
+                id,
+                deleted: false
+            }
         })
 
         if(!university){
@@ -484,19 +487,20 @@ exports.getallCoursesByUniversity = async(data)=>{
             }
         }
         const filteredCourses = []
-        const allCourses = await Course.findAll({where:{UniversityId: university.id}})
+        const allCourses = await Course.findAll({where:{UniversityId: university.id, deleted: false}})
         if(allCourses.length < 1) {
             return {
                 error: false,
                 message: 'No course found',
                 data: {
+                    university_name: university.name,
                     allCourses: [],
                     pagination: 0
                 }
             }
         }
         for(const course of allCourses){
-            const allClasses = await Class.findAll({where:{CourseId: course.id}})
+            const allClasses = await Class.findAll({where:{CourseId: course.id, deleted: false}})
             const fineTunedCourse = {
                 id: course.id,
                 name: course.name,
@@ -517,8 +521,80 @@ exports.getallCoursesByUniversity = async(data)=>{
             error: false,
             message: "All courses retreived successfully",
             data: {
+                university_name: university.name,
                 allCourses: paginatedResult,
                 pagination: paginatedResult.perPage
+            }
+        }
+        
+    } catch (error) {
+       console.log(error)
+        return{
+            error: true,
+            message: error.message|| "Unable to retreive courses at the moment",
+            data: null
+        } 
+    }
+   
+}
+
+exports.getallCoursesByProgram = async(data)=>{
+    try {
+        const {
+            id,
+            limit,
+            page
+        } = data
+        const program = await Program.findOne({
+            where: {id, deleted: false}
+        })
+
+        if(!program){
+            return {
+                error: true,
+                message: "Program Not Found",
+                data: null
+            }
+        }
+        const filteredCourses = []
+        const allCourses = await Course.findAll({where:{ProgramId: program.id, deleted: false}})
+        if(allCourses.length < 1) {
+            return {
+                error: false,
+                message: 'No course found',
+                data: {
+                    allCourses: [],
+                    pagination: 0,
+                    total_courses_in_program: 0
+                }
+            }
+        }
+        for(const course of allCourses){
+            const allClasses = await Class.findAll({where:{CourseId: course.id, deleted: false}})
+            const fineTunedCourse = {
+                id: course.id,
+                name: course.name,
+                description: course.description,
+                program_name: course.program_name,
+                school_name: course.school_name,
+                available_diet: allClasses
+            }
+            filteredCourses.push(fineTunedCourse)
+        }
+
+
+        const paginatedResult = await paginateRaw(filteredCourses, {
+            limit: Number(limit),
+            page: Number(page),
+        })
+        return {
+            error: false,
+            message: "All courses retreived successfully",
+            data: {
+                program_name: program.name,
+                allCourses: paginatedResult,
+                pagination: paginatedResult.perPage,
+                total_courses_in_program: filteredCourses.length
             }
         }
         

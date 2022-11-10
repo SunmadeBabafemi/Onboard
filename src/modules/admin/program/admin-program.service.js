@@ -72,6 +72,63 @@ exports.addAProgram = async (data) => {
    
 }
 
+
+exports.viewAProgram = async (data) => {
+    try {
+        const {program_id} = data
+        const existingProgram = await Program.findOne({where:{id:program_id}})
+        if(!existingProgram){
+            return {
+                error: true,
+                message: "Program Not Found",
+                data: null
+            }
+        }
+
+        return {
+            error: false,
+            message: "Program retreived successfully",
+            data: existingProgram
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: error.message || "Unable to retrieve program at the moment",
+            data: null
+        }
+    }
+}
+
+exports.viewAllProgramInAUniversity = async (data) => {
+    try {
+        const {university_id} = data
+        const existingPrograms = await Program.findAll({
+            where:{UniversityId:university_id}
+        })
+        if(existingPrograms <1){
+            return {
+                error: false,
+                message: "Program Not Found",
+                data: []
+            }
+        }
+
+        return {
+            error: false,
+            message: "Program retreived successfully",
+            data: existingPrograms
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: error.message || "Unable to retrieve program at the moment",
+            data: null
+        }
+    }
+}
+
 exports.editProgram = async (data) => {
     try {
         const {

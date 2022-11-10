@@ -8,13 +8,15 @@ const {
     editAUniversityController,
     deleteAUniversityController,
     getAllUniversitiesController,
-    viewAUniversityController
+    viewAUniversityController,
+    searchUniversitiesController
 } = require('./admin-university.controller')
 const {
     addUniversitySchema,
     modelIdSchema,
     editUniversitySchema,
-    paginateSchema
+    paginateSchema,
+    searchSchema
 } = require('./admin-university.schema')
 
 const router = Router()
@@ -24,6 +26,13 @@ router.get(
     validateRequest(paginateSchema, 'query'),
     authorizeAdmin,
     getAllUniversitiesController
+)
+
+router.get(
+    '/search',
+    // validateRequest(searchSchema, 'query'),
+    authorizeAdmin,
+    searchUniversitiesController
 )
 
 router.get(

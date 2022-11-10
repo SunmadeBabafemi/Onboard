@@ -5,7 +5,9 @@ const validateRequest = require('../../../common/middlewares/validateRequest')
 const { 
     addAProgramController,
     editAProgramController,
-    deleteAProgramController
+    deleteAProgramController,
+    viewAProgramController,
+    viewAllProgramsInAUniversityController
 } = require('./admin-program.controller')
 const {
     addProgramSchema,
@@ -22,6 +24,20 @@ router.post(
     validateRequest(addProgramSchema, "body"),
     authorizeAdmin,
     addAProgramController
+)
+
+router.get(
+    '/view/:id',
+    validateRequest(modelIdSchema, "params"),
+    authorizeAdmin,
+    viewAProgramController
+)
+
+router.get(
+    '/by-uni/:id',
+    validateRequest(modelIdSchema, "params"),
+    authorizeAdmin,
+    viewAllProgramsInAUniversityController
 )
 
 router.patch(

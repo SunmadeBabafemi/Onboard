@@ -27,3 +27,10 @@ exports.paginateSchema = Joi.object({
   page: Joi.number().positive().optional(),
   limit: Joi.number().positive().optional(),
 });
+
+exports.searchSchema = Joi.object({
+  page: Joi.number().positive().optional(),
+  limit: Joi.number().positive().optional(),
+  search: Joi.string().required(),
+
+});

@@ -42,6 +42,84 @@ exports.getAllUniversities = async (data) => {
     }
 }
 
+exports.searchForUniversity = async (payload) => {
+    try {
+       const {
+        limit,
+        page,
+        name,
+        country
+       } = payload
+       let foundUniversities = []
+       if(name){
+            const lower = String(name).toLocaleLowerCase()
+            const searchResults = await University.findAll({
+                where: {
+                    name: { [Op.like]: `%${lower}%` },
+                    deleted: false
+                },
+                raw: true,
+            })
+            foundUniversities = searchResults
+        } 
+        if(country) {
+            const searchResults = await University.findAll({
+                where: {
+                    country: { [Op.like]: `%${country}%` },
+                    deleted: false
+                },
+                raw: true,
+            })
+            foundUniversities = searchResults
+        } 
+        if (name && country) {
+            const lower = String(name).toLocaleLowerCase()
+            const searchResults = await University.findAll({
+                where: {
+                    name: { [Op.like]: `%${lower}%` },
+                    country: { [Op.like]: `%${country}%` },
+                    deleted: false
+                },
+                raw: true,
+            })
+            foundUniversities = searchResults
+        }
+       
+       if(foundUniversities.length <1) {
+            return {
+                error: false,
+                message: "No University Found",
+                data: {
+                    foundUniversities: [],
+                    pagination: 0
+                }
+            }
+       }
+
+       const paginatedResult = await paginateRaw(foundUniversities, {
+        limit: Number(limit),
+        page: Number(page)
+       })
+
+       return {
+        error: false,
+        message: "Univerisities retreived successfully",
+        data: {
+            foundUniversities: paginatedResult,
+            pagination: paginatedResult.perPage
+        }
+       }
+
+    } catch (error) {
+        console.log(error)
+        return{
+            error: true,
+            message: error.message|| "Unable to return UNiversity at the moment",
+            data: null
+        }
+    }
+}
+
 exports.viewUniversity = async (data) => {
     try {
         const{
@@ -73,9 +151,9 @@ exports.viewUniversity = async (data) => {
             where: {UniversityId: university.id}
         })
 
-        const allCoursesOffered = await Course.findAll({where:{UniversityId: university.id}})
-        const pagedArray = [...allUniversityReviews, ...allCoursesOffered]
-        const paginatedResult = await paginateRaw(pagedArray, {
+        // const allCoursesOffered = await Course.findAll({where:{UniversityId: university.id}})
+        // const pagedArray = [...allUniversityReviews, ...allCoursesOffered]
+        const paginatedResult = await paginateRaw(allUniversityReviews, {
             limit: Number(limit),
             page: Number(page)
         })
@@ -84,7 +162,7 @@ exports.viewUniversity = async (data) => {
             message: "University retrieved successfully",
             data: {
                 university: university,
-                coursesAndReviews: paginatedResult,
+                reviews: paginatedResult,
                 pagination: paginatedResult.perPage
             }
         }

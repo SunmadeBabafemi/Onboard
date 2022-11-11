@@ -172,6 +172,7 @@ exports.addAUniversity = async (payload) => {
            admin , 
            files
         } = payload
+        let allPrograms = []
         const existingUni = await University.findOne({
             where: {name, country}
         })
@@ -201,8 +202,47 @@ exports.addAUniversity = async (payload) => {
             },
             {where: {id: newUni.id}}
         )
+        
+        var undergraduate = await Program.create({
+            name: "undergraduate",
+            description: "undergraduate courses that take 4 to 5 years",
+            duration: 4,
+            UniversityId: newUni.id,
+            university_name: newUni.name,
+            added_by: admin.email,
+        })
+        var graduate = await Program.create({
+            name: "graduate",
+            description: "graduate courses that take 1 to 2 years",
+            duration: 2,
+            UniversityId: newUni.id,
+            university_name: newUni.name,
+            added_by: admin.email,
 
-    const updatedUni = await University.findOne({
+        })
+        var postGraduate = await Program.create({
+            name: "postGraduate",
+            description: "postGraduate courses that take 3 to 4 years",
+            duration: 4,
+            UniversityId: newUni.id,
+            university_name: newUni.name,
+            added_by: admin.email,
+
+        })
+        var advancedLearning = await Program.create({
+            name: "advancedLearning",
+            description: "advancedLearning courses that take 3 to 4 years",
+            duration: 3,
+            UniversityId: newUni.id,
+            university_name: newUni.name,
+            added_by: admin.email,
+
+        })
+
+        allPrograms.push(undergraduate, graduate, postGraduate, advancedLearning)
+
+
+        const updatedUni = await University.findOne({
         attributes: [
             "id",
             "pictures",
@@ -217,7 +257,10 @@ exports.addAUniversity = async (payload) => {
         return {
             error: false,
             message: "University added successfully",
-            data: updatedUni
+            data: {
+                univeristy: updatedUni,
+                available_programs: allPrograms
+            }
         }
     } catch (error) {
         console.log(error);

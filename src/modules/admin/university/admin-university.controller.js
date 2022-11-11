@@ -102,6 +102,7 @@ exports.viewAUniversityController = async (req, res, next) => {
 exports.addAUniversityController = async(req, res, next) => {
     try {
         const {error, message, data } = await universityService.addAUniversity({
+            admin: req.user,
             name: req.body.name,
             description: req.body.description,
             address: req.body.address,

@@ -41,10 +41,7 @@ exports.getallReviewsOfAUniversityController = async(req, res, next) => {
             id: req.params.id
         })
 
-        const allData ={
-            result: data.reviews,
-            pagination: data.pagination
-        }
+ 
         if (error) {
         return next(
             createError(HTTP.BAD_REQUEST, [
@@ -58,7 +55,7 @@ exports.getallReviewsOfAUniversityController = async(req, res, next) => {
             ])
         );
         }
-        return createResponse(message, allData)(res, HTTP.OK);
+        return createResponse(message, data)(res, HTTP.OK);
     } catch (error) {
         console.error(error);
 

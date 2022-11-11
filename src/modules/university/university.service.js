@@ -68,11 +68,14 @@ exports.viewUniversity = async (data) => {
                 data: null
             }
         }
-
+        const allPrograms = await Program.findAll({where:{UniversityId: university.id}})
         return {
             error: false,
             message: "University retrieved successfully",
-            data: university
+            data: {
+                university: university,
+                available_programs: allPrograms
+            }
         }
     } catch (error) {
        console.log(error)

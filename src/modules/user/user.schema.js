@@ -3,7 +3,8 @@ Joi.objectId = require("joi-objectid")(Joi);
 
 exports.registerUserSchema = Joi.object().keys({
     email: Joi.string().required(),
-    password: Joi.string().required()
+    password: Joi.string().required(),
+    full_name:Joi.string().required()
 })
 
 exports.editUserProfileSchema = Joi.object().keys({

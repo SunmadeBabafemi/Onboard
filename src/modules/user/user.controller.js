@@ -107,6 +107,31 @@ exports.loginUserController = async (req, res, next) => {
     }
 }
 
+exports.viewUserProfileController = async (req, res, next) => {
+    try {
+        const {error, message, data} = await UserService.viewUserProfile(req.userId)
+
+        if (error) {
+        return next(
+            createError(HTTP.BAD_REQUEST, [
+            {
+                status: RESPONSE.ERROR,
+                message,
+                statusCode:
+                data instanceof Error ? HTTP.SERVER_ERROR : HTTP.BAD_REQUEST,
+                data,
+            },
+            ])
+        );
+        }
+        return createResponse(message, data)(res, HTTP.OK);
+    } catch (error) {
+        console.error(error);
+
+        return next(createError.InternalServerError(error));
+    }
+}
+
 exports.logoutUserController = async (req, res, next) => {
     try {
         const {error, message, data} = await UserService.logoutUser(req.token)
@@ -137,8 +162,11 @@ exports.editUserProfileController = async (req, res, next) => {
     try {
         const {error, message, data} = await UserService.editUserProfile({
             user_id: req.userId,
-            body: req.body,
-            file: req.file
+            full_name: req.body.full_name,
+            email: req.body.email,
+            phone_number: req.body.phone_number,
+            password: req.body.password,
+            avatar: req.file
         })
 
         if (error) {

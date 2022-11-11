@@ -1,4 +1,5 @@
 const {Router} = require('express')
+const upload = require('../../../common/config/multer')
 const{authorizeSuperAdmin, authorizeAdmin} = require('../../../common/middlewares/authorize')
 const {authAdminLogin} = require('../../../common/middlewares/authorizeLogin')
 const validateRequest = require('../../../common/middlewares/validateRequest')
@@ -7,7 +8,9 @@ registerAdminController,
 loginAdminController,
 logoutAdminController,
 forgotPasswordController,
-resetPasswordController
+resetPasswordController,
+viewAdminProfileController,
+editAdminProfileController
 } = require('./admin-admin.controller')
 const {
  registerAdminSchema,
@@ -29,6 +32,19 @@ router.post(
     validateRequest(loginAdminSchema, "body"),
     authAdminLogin,
     loginAdminController
+)
+
+router.get(
+    '/view-profile',
+    authorizeAdmin,
+    viewAdminProfileController
+)
+
+router.patch(
+    '/edit-profile',
+    upload.single("avatar"),
+    authorizeAdmin,
+    editAdminProfileController
 )
 
 router.get(

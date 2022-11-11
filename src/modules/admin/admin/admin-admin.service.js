@@ -2,6 +2,7 @@ const models = require('../../../db/models')
 var Sequelize = require('sequelize')
 const {hashPassword, comparePassword,forgotPassword, resetPassword} = require('../../../common/helpers/password')
 const { jwtSign, jwtVerify} = require('../../../common/helpers/token')
+const { ImageUploader } = require('../../../common/helpers/cloudinaryUpload')
 const {
     sequelize,
     Admin,
@@ -49,6 +50,96 @@ exports.registerAdmin = async (data) =>{
     }
 }
 
+exports.viewAdminProfile = async(user_id) => {
+    try {
+        const admin = await Admin.findOne({
+            attributes:{exclude:['password']},
+            where:{id:user_id, deleted: false}
+        })
+
+        if(!admin){
+            return {
+                error: true,
+                message: "Admin Not Found",
+                data: null
+            }
+        }
+
+        return {
+            error: false,
+            message: "Admin Profile retreived successfully",
+            data: admin
+        }
+    } catch (error) {
+        console.log(error);
+        return{
+            error: true,
+            message: error.message || "Unable to retrieve Admin's Profile at the moment",
+            data: null
+        }
+    }
+}
+
+exports.editAdminProfile = async(payload) => {
+    try {
+        const {
+           user_id,
+           password,
+           avatar ,
+           phone_number
+        } = payload
+        let url
+        let hashed 
+        const admin = await Admin.findOne({
+            where:{id:user_id, deleted: false}
+        })
+
+        if(!admin){
+            return {
+                error: true,
+                message: "Admin Not Found",
+                data: null
+            }
+        }
+        if(avatar){
+            const {path} = avatar
+            url = await ImageUploader(path)
+        }
+        if(password){
+            hashed = hashPassword(password)
+        }
+
+        await Admin.update(
+            {
+                avatar: avatar?url:admin.avatar,
+                password: password? hashed: admin.password,
+                phone_number: phone_number? phone_number: admin.phone_number
+            },
+            {
+                where:{id:user_id}
+            }
+        )
+        
+        const editedAdmin = await Admin.findOne({
+            attributes:{exclude:["password"]},
+            where:{id: admin.id}
+        })
+
+        return {
+            error: false,
+            message: "Admin Profile edited successfully",
+            data: editedAdmin
+        }
+    } catch (error) {
+        console.log(error);
+        return{
+            error: true,
+            message: error.message || "Unable to retrieve Admin's Profile at the moment",
+            data: null
+        }
+    }
+}
+
 exports.loginAdmin = async(user, data) => {
     try {
         if(data.password){
@@ -69,13 +160,15 @@ exports.loginAdmin = async(user, data) => {
 
         const refreshToken = jwtSign(user.id)
         await Admin.update(
-            {refreshTokens: refreshToken},
+            {access_tokens: refreshToken},
             {where: {id: user.id}}
         )
         const loginAdmin = await Admin.findOne({
             attributes:['email','full_name', 'id', "role"],
             where: {id:user.id}
         })
+
+
 
         return{
             error: false,
@@ -104,7 +197,7 @@ exports.logoutAdmin = async(token) => {
             }
         }
         await Admin.update(
-            {refreshTokens: null},
+            {access_tokens: null},
             {where: {id: loggedInAdmin.id}}
         )
 

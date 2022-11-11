@@ -129,6 +129,41 @@ exports.viewAllProgramInAUniversity = async (data) => {
     }
 }
 
+exports.viewAllPrograms = async (data) => {
+    try {
+        const {limit, page} = data
+        const existingPrograms = await Program.findAll({
+            where:{deleted:false}
+        })
+        if(existingPrograms <1){
+            return {
+                error: false,
+                message: "Program Not Found",
+                data: []
+            }
+        }
+        const paginatedResult = await paginateRaw(existingPrograms, {
+            limit: limit? Number(limit): 10,
+            page: page?Number(page): 1
+        })
+        return {
+            error: false,
+            message: "Program retreived successfully",
+            data: {
+                allPrograms: paginatedResult,
+                pagination: paginatedResult.perPage
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: true,
+            message: error.message || "Unable to retrieve programs at the moment",
+            data: null
+        }
+    }
+}
+
 exports.editProgram = async (data) => {
     try {
         const {

@@ -112,11 +112,11 @@
                     "field": "phone_number",
                     "seqType": "Sequelize.STRING"
                 },
-                "application_status": {
+                "status": {
                     "defaultValue": {
                         "value": "pending"
                     },
-                    "field": "application_status",
+                    "field": "status",
                     "seqType": "Sequelize.ENUM('pending', 'active', 'accepted', 'rejected', 'canceled')"
                 },
                 "application_fees": {
@@ -676,5 +676,5 @@
             "indexes": []
         }
     },
-    "revision": 28
+    "revision": 29
 }

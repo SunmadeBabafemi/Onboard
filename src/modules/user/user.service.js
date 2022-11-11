@@ -94,7 +94,7 @@ exports.completeSignup = async (otp) => {
 
         await OneTimePassword.destroy({where: {otp}})
         const verfiedUser = await User.findOne({
-            attributes:['id', 'full_name', 'email', 'phone_number', 'profile_picture', 'isVerified', 'created_at', 'updated_at'],
+            attributes:['id', 'full_name', 'email', 'phone_number', 'avatar', 'isVerified', 'created_at', 'updated_at'],
             where:{id}
         })
 
@@ -134,7 +134,7 @@ exports.loginUser = async(user, data) => {
 
         const refreshToken = jwtSign(user.id)
         await User.update(
-            {refreshTokens: refreshToken},
+            {accessTokens: refreshToken},
             {where: {id: user.id}}
         )
         const loginUser = await User.findOne({
@@ -158,6 +158,35 @@ exports.loginUser = async(user, data) => {
     }
 }
 
+exports.viewUserProfile = async(user_id) => {
+    try {
+        const user = await User.findOne({
+            attributes:{exclude:['password']},
+            where:{id:user_id, deleted: false}
+        })
+
+        if(!user){
+            return {
+                error: true,
+                message: "User Not Found",
+                data: null
+            }
+        }
+
+        return {
+            error: false,
+            message: "User Profile retreived successfully",
+            data: user
+        }
+    } catch (error) {
+        console.log(error);
+        return{
+            error: true,
+            message: error.message || "Unable to retrieve Admin's Profile at the moment",
+            data: null
+        }
+    }
+}
 exports.logoutUser = async(token) => {
     try {
         const {id} = jwtVerify(token)
@@ -194,9 +223,14 @@ exports.editUserProfile = async (data) => {
     try {
         const{
             user_id,
-            body,
-            file
+            full_name,
+            email,
+            phone_number,
+            password,
+            avatar
         } = data
+        let url
+        let hashed
         const existingUser = await User.findOne({where:{id:user_id}})
         if(!existingUser){
             return {
@@ -205,26 +239,27 @@ exports.editUserProfile = async (data) => {
                 data: null
             }
         }
-        if (file){
-            const {path} = file
-            const url = await ImageUploader(path)
-            await User.update(
-                {
-                    ...body,
-                    profile_picture: url
-                },
-                {where:{id:user_id}}
-            ) 
+        if (avatar){
+            const {path} = avatar
+            url = await ImageUploader(path)
         } 
+        if(password){
+            hashed = await hashPassword(password)
+        }
         await User.update(
             {
-                ...body,
+                full_name: full_name? full_name: existingUser.full_name,
+                email: email? email: existingUser.email,
+                phone_number: phone_number? phone_number: existingUser.phone_number,
+                password: password? hashed: existingUser.password,
+                avatar: avatar? url: existingUser.avatar
+
             },
             {where:{id:user_id}}
         )
 
         const updatedUser = await User.findOne({
-            attributes:{excludes:['password']},
+            attributes:{exclude:['password']},
             where:{id:user_id}
         })
         return {

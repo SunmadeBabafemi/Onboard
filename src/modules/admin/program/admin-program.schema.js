@@ -15,8 +15,13 @@ exports.addProgramSchema = Joi.object().keys({
 exports.editProgramSchema = Joi.object().keys({
   name: Joi.string().optional(),
   description: Joi.string().optional(),
-  duuration: Joi.number().positive().optional(),
+  duration: Joi.number().positive().optional(),
 })
 exports.modelIdSchema = Joi.object({
   id: Joi.string().required(),
 })
+
+exports.paginateSchema = Joi.object({
+  page: Joi.number().positive().optional(),
+  limit: Joi.number().positive().optional(),
+});

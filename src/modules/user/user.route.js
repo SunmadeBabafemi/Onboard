@@ -10,7 +10,8 @@ const {
  forgotPasswordController,
  resetPasswordController,
  googleUserAuthController,
- editUserProfileController
+ editUserProfileController,
+ viewUserProfileController
 } = require('./user.controller')
 const {
  registerUserSchema,
@@ -47,6 +48,13 @@ router.post(
     authorizeLogin,
     loginUserController
 )
+
+router.get(
+    '/view-profile',
+    authorize(),
+    viewUserProfileController
+)
+
 router.get(
     '/logout',
     authorize(),

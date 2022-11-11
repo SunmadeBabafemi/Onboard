@@ -643,38 +643,42 @@ exports.getallCourses = async(data)=>{
 exports.seedCourses = async (data) => {
     try {
         const {limit, page} = data
-        let allPrograms = await Program.findAll()
+        let allPrograms =[]
         let allCourses = []
         const allUniversities = await University.findAll()
         for(const university of allUniversities){
-            var undergraduate = await Program.create({
-                name: "undergraduate",
-                description: "undergraduate courses that take 4 to 5 years",
-                duration: 4,
-                UniversityId: university.id
-            })
-            var graduate = await Program.create({
-                name: "graduate",
-                description: "graduate courses that take 1 to 2 years",
-                duration: 2,
-                UniversityId: university.id
-            })
-            var postGraduate = await Program.create({
-                name: "postGraduate",
-                description: "postGraduate courses that take 3 to 4 years",
-                duration: 4,
-                UniversityId: university.id
-            })
-            var advancedLearning = await Program.create({
-                name: "advancedLearning",
-                description: "advancedLearning courses that take 3 to 4 years",
-                duration: 3,
-                UniversityId: university.id
-            })
+            const programs = await Program.findAll({where:{UniversityId: university.id}})
+            if (programs.length < 1) {
+                var undergraduate = await Program.create({
+                    name: "undergraduate",
+                    description: "undergraduate courses that take 4 to 5 years",
+                    duration: 4,
+                    UniversityId: university.id
+                })
+                var graduate = await Program.create({
+                    name: "graduate",
+                    description: "graduate courses that take 1 to 2 years",
+                    duration: 2,
+                    UniversityId: university.id
+                })
+                var postGraduate = await Program.create({
+                    name: "postGraduate",
+                    description: "postGraduate courses that take 3 to 4 years",
+                    duration: 4,
+                    UniversityId: university.id
+                })
+                var advancedLearning = await Program.create({
+                    name: "advancedLearning",
+                    description: "advancedLearning courses that take 3 to 4 years",
+                    duration: 3,
+                    UniversityId: university.id
+                })
 
-            allPrograms.push(undergraduate, graduate, postGraduate, advancedLearning)
-            
+                allPrograms.push(undergraduate, graduate, postGraduate, advancedLearning)
+                
+            }
         }
+            
 
         for(const program of allPrograms){
             for(const course_name of courses){

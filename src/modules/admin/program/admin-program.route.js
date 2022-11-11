@@ -6,13 +6,15 @@ const {
     editAProgramController,
     deleteAProgramController,
     viewAProgramController,
-    viewAllProgramsInAUniversityController
+    viewAllProgramsInAUniversityController,
+    viewAllProgramsController
 } = require('./admin-program.controller')
 const {
     addProgramSchema,
     modelIdSchema,
     uniPgParamsSchema,
-    editProgramSchema
+    editProgramSchema,
+    paginateSchema
   } = require('./admin-program.schema')
 
 const router = Router()
@@ -30,6 +32,13 @@ router.get(
     validateRequest(modelIdSchema, "params"),
     authorizeAdmin,
     viewAProgramController
+)
+
+router.get(
+    '/all',
+    validateRequest(paginateSchema, "query"),
+    authorizeAdmin,
+    viewAllProgramsController
 )
 
 router.get(

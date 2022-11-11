@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) =>{
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4
       },
+      avatar: {
+        type: DataTypes.STRING
+      },
       full_name: {
         type: DataTypes.STRING
       },

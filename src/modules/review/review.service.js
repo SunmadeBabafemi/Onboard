@@ -31,7 +31,7 @@ exports.addAReview = async(data) => {
             ],
             where:{deleted: false}
         })
-        const avgRating = result[0].dataValues.avgRating
+        const avgRating = Number(result[0].dataValues.avgRating).toPrecision(2)
         await University.update(
             {ratings: Number(avgRating)},
             {where: {id:university_id}}

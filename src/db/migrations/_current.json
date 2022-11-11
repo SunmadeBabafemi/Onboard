@@ -580,7 +580,7 @@
                 },
                 "ratings": {
                     "field": "ratings",
-                    "seqType": "Sequelize.INTEGER"
+                    "seqType": "Sequelize.REAL"
                 },
                 "added_by": {
                     "field": "added_by",
@@ -684,5 +684,5 @@
             "indexes": []
         }
     },
-    "revision": 30
+    "revision": 31
 }

@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) =>{
         type: DataTypes.STRING,
       },
       ratings:{
-        type: DataTypes.INTEGER
+        type: DataTypes.REAL
       },
       added_by: {
         type: DataTypes.STRING,

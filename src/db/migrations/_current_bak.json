@@ -13,6 +13,10 @@
                     "field": "id",
                     "seqType": "Sequelize.UUID"
                 },
+                "avatar": {
+                    "field": "avatar",
+                    "seqType": "Sequelize.STRING"
+                },
                 "full_name": {
                     "field": "full_name",
                     "seqType": "Sequelize.STRING"
@@ -615,6 +619,10 @@
                     "field": "id",
                     "seqType": "Sequelize.UUID"
                 },
+                "avatar": {
+                    "field": "avatar",
+                    "seqType": "Sequelize.STRING"
+                },
                 "full_name": {
                     "field": "full_name",
                     "seqType": "Sequelize.STRING"
@@ -676,5 +684,5 @@
             "indexes": []
         }
     },
-    "revision": 29
+    "revision": 30
 }
